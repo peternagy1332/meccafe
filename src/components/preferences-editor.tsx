@@ -113,7 +113,12 @@ export function PreferencesEditor({
 
     const offsetX = (video.videoWidth - size) / 2;
     const offsetY = (video.videoHeight - size) / 2;
+    
+    ctx.save();
+    ctx.translate(size, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(video, offsetX, offsetY, size, size, 0, 0, size, size);
+    ctx.restore();
 
     canvas.toBlob((blob) => {
       if (blob) {

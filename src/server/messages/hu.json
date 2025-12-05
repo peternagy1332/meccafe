@@ -106,7 +106,7 @@
     },
     "preview": "Előnézet",
     "terms": {
-      "agree": "Elfogadom az {tos} és az {pp}",
+      "agree": "Elfogadom az <tos>Általános Szerződési Feltételeket</tos> és az <pp>Adatvédelmi Tájékoztatót</pp>",
       "error": "El kell fogadnod a feltételeket a folytatáshoz",
       "pp": "Adatvédelmi Tájékoztatót",
       "tos": "Általános Szerződési Feltételeket"

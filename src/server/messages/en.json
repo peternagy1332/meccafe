@@ -106,7 +106,7 @@
     },
     "preview": "Preview",
     "terms": {
-      "agree": "I agree to the {tos} and {pp}",
+      "agree": "I agree to the <tos>Terms of Service</tos> and <pp>Privacy Policy</pp>",
       "error": "You must accept the terms to continue",
       "pp": "Privacy Policy",
       "tos": "Terms of Service"

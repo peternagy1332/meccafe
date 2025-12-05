@@ -1,6 +1,6 @@
 # Általános Szerződési Feltételek
 
-**Hatálybalépés Dátuma:** 2025. 01. 01.
+**Hatálybalépés Dátuma:** 2025. 12. 05.
 
 ## 1. Feltételek Elfogadása
 

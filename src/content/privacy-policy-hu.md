@@ -1,6 +1,6 @@
 # Adatvédelmi Tájékoztató
 
-**Hatálybalépés Dátuma:** 2025. 01. 01.
+**Hatálybalépés Dátuma:** 2025. 12. 05.
 
 ## 1. Bevezetés
 
