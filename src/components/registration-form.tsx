@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,8 @@ import {
   Check,
   Coffee,
   Mail,
+  RefreshCw,
   Sparkles,
-  Upload,
 } from "lucide-react";
 
 const INTERESTS = [
@@ -88,7 +88,10 @@ export function RegistrationForm(): React.ReactNode {
   const [direction, setDirection] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     prefInterests: [],
@@ -101,6 +104,74 @@ export function RegistrationForm(): React.ReactNode {
     avatarPreview: null,
     email: "",
   });
+
+  const stopCamera = (): void => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraActive(false);
+  };
+
+  const startCamera = async (): Promise<void> => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 640 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      setIsCameraActive(true);
+    } catch (error) {
+      console.error("Camera access denied:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isCameraActive && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [isCameraActive]);
+
+  const capturePhoto = (): void => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const size = Math.min(video.videoWidth, video.videoHeight);
+    canvas.width = size;
+    canvas.height = size;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const offsetX = (video.videoWidth - size) / 2;
+    const offsetY = (video.videoHeight - size) / 2;
+    ctx.translate(size, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, offsetX, offsetY, size, size, 0, 0, size, size);
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], "selfie.jpg", { type: "image/jpeg" });
+        setFormData((prev) => ({
+          ...prev,
+          avatar: file,
+          avatarPreview: URL.createObjectURL(blob),
+        }));
+        stopCamera();
+      }
+    }, "image/jpeg", 0.9);
+  };
+
+  useEffect(() => {
+    return () => stopCamera();
+  }, []);
+
+  useEffect(() => {
+    if (step !== 7) {
+      stopCamera();
+    }
+  }, [step]);
 
   const canProceed = (): boolean => {
     switch (step) {
@@ -150,17 +221,6 @@ export function RegistrationForm(): React.ReactNode {
         ? prev[key].filter((i) => i !== interest)
         : [...prev[key], interest],
     }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        avatar: file,
-        avatarPreview: URL.createObjectURL(file),
-      }));
-    }
   };
 
   const handleSubmit = async (): Promise<void> => {
@@ -465,14 +525,7 @@ export function RegistrationForm(): React.ReactNode {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  capture="user"
-                  className="hidden"
-                />
+                <canvas ref={canvasRef} className="hidden" />
                 {formData.avatarPreview ? (
                   <motion.div
                     className="relative"
@@ -487,22 +540,51 @@ export function RegistrationForm(): React.ReactNode {
                     />
                     <motion.button
                       className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={() => {
+                        setFormData((prev) => ({ ...prev, avatar: null, avatarPreview: null }));
+                        startCamera();
+                      }}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                     >
+                      <RefreshCw className="h-5 w-5" />
+                    </motion.button>
+                  </motion.div>
+                ) : isCameraActive ? (
+                  <motion.div
+                    className="flex flex-col items-center gap-4"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring" }}
+                  >
+                    <div className="relative h-40 w-40 overflow-hidden rounded-full border-4 border-primary shadow-lg">
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        className="h-full w-full scale-x-[-1] object-cover"
+                      />
+                    </div>
+                    <motion.button
+                      className="flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-lg"
+                      onClick={capturePhoto}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       <Camera className="h-5 w-5" />
+                      Take Photo
                     </motion.button>
                   </motion.div>
                 ) : (
                   <motion.button
                     className="flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-full border-4 border-dashed border-muted-foreground/30 bg-muted/30 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={startCamera}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Upload className="h-8 w-8" />
-                    <span className="text-sm font-medium">Upload photo</span>
+                    <Camera className="h-8 w-8" />
+                    <span className="text-sm font-medium">Start Camera</span>
                   </motion.button>
                 )}
                 <p className="text-xs text-muted-foreground">
