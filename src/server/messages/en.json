@@ -125,6 +125,9 @@
     "hu": "Magyar",
     "en": "English"
   },
+  "LogoutButton": {
+    "logout": "Logout"
+  },
   "LoginPage": {
     "noAccount": "Don't have an account?",
     "register": "Register here"

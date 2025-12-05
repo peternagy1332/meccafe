@@ -4,12 +4,13 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 
 export function LoginForm(): React.ReactNode {
   const t = useTranslations("LoginForm");
+  const locale = useLocale();
   const [email, setEmail] = useState("");
   const [linkSent, setLinkSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +26,7 @@ export function LoginForm(): React.ReactNode {
     const { error: linkError } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        emailRedirectTo: `${window.location.origin}/${locale}/auth/callback?next=/dashboard`,
         shouldCreateUser: false,
       },
     });

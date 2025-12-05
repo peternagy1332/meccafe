@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { HomeContent } from "@/components/home-content";
 import { Users, Calendar, Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
@@ -47,6 +49,17 @@ const FEATURE_KEYS = ["interestMatching", "weeklyMatches", "realConnections"] as
 
 export default function Home(): React.ReactNode {
   const t = useTranslations("Home");
+  const locale = useLocale();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const code = searchParams.get("code");
+
+  useEffect(() => {
+    if (code) {
+      const next = searchParams.get("next") ?? "/dashboard";
+      router.replace(`/${locale}/auth/callback?code=${code}&next=${next}`);
+    }
+  }, [code, locale, router, searchParams]);
 
   return (
     <div className="noise-overlay relative min-h-screen overflow-hidden bg-background">

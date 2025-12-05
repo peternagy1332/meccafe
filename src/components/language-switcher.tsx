@@ -26,7 +26,7 @@ export function LanguageSwitcher(): React.ReactNode {
       className="gap-2"
     >
       <Globe className="h-4 w-4" />
-      {t(otherLocale, { default: otherLocale === "hu" ? "Magyar" : "English" })}
+      {t(locale, { default: locale === "hu" ? "Magyar" : "English" })}
     </Button>
   );
 }

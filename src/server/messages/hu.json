@@ -125,6 +125,9 @@
     "hu": "Magyar",
     "en": "English"
   },
+  "LogoutButton": {
+    "logout": "Kijelentkezés"
+  },
   "LoginPage": {
     "noAccount": "Nincs még fiókod?",
     "register": "Regisztrálj itt"
