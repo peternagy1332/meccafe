@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { HomeContent } from "@/components/home-content";
@@ -47,8 +47,7 @@ function FloatingBean({
 const FEATURE_ICONS = [Users, Calendar, Sparkles] as const;
 const FEATURE_KEYS = ["interestMatching", "weeklyMatches", "realConnections"] as const;
 
-export default function Home(): React.ReactNode {
-  const t = useTranslations("Home");
+function AuthCallbackHandler(): React.ReactNode {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -61,8 +60,17 @@ export default function Home(): React.ReactNode {
     }
   }, [code, locale, router, searchParams]);
 
+  return null;
+}
+
+export default function Home(): React.ReactNode {
+  const t = useTranslations("Home");
+
   return (
     <div className="noise-overlay relative min-h-screen overflow-hidden bg-background">
+      <Suspense fallback={null}>
+        <AuthCallbackHandler />
+      </Suspense>
       {/* Language Switcher and Login Button */}
       <div className="absolute right-4 top-4 z-10 flex items-center gap-4">
         <LanguageSwitcher />
