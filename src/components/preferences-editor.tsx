@@ -418,7 +418,7 @@ export function PreferencesEditor({
                     unoptimized
                   />
                   <motion.button
-                    className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
+                    className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg cursor-pointer"
                     onClick={() => {
                       setFormData((prev) => ({ ...prev, avatar: null, avatarPreview: null }));
                       startCamera();

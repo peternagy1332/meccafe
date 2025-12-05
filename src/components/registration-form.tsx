@@ -526,7 +526,7 @@ export function RegistrationForm(): React.ReactNode {
                       className="h-40 w-40 rounded-full border-4 border-primary object-cover shadow-lg"
                     />
                     <motion.button
-                      className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
+                      className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg cursor-pointer"
                       onClick={() => {
                         setFormData((prev) => ({ ...prev, avatar: null, avatarPreview: null }));
                         startCamera();
@@ -554,7 +554,7 @@ export function RegistrationForm(): React.ReactNode {
                       />
                     </div>
                     <motion.button
-                      className="flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-lg"
+                      className="flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-lg cursor-pointer"
                       onClick={capturePhoto}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -565,7 +565,7 @@ export function RegistrationForm(): React.ReactNode {
                   </motion.div>
                 ) : (
                   <motion.button
-                    className="flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-full border-4 border-dashed border-muted-foreground/30 bg-muted/30 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    className="flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-full border-4 border-dashed border-muted-foreground/30 bg-muted/30 text-muted-foreground transition-colors hover:border-primary hover:text-primary cursor-pointer"
                     onClick={startCamera}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

@@ -2,13 +2,17 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
-import { routing, type Locale } from "@/i18n/routing";
+import { type Locale } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { Globe } from "lucide-react";
+
+const localeFlags: Record<Locale, string> = {
+  hu: "🇭🇺",
+  en: "🇬🇧",
+};
 
 export function LanguageSwitcher(): React.ReactNode {
   const t = useTranslations("LanguageSwitcher");
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
 
@@ -25,7 +29,7 @@ export function LanguageSwitcher(): React.ReactNode {
       onClick={() => switchLocale(otherLocale)}
       className="gap-2"
     >
-      <Globe className="h-4 w-4" />
+      <span className="text-lg">{localeFlags[locale as Locale]}</span>
       {t(locale, { default: locale === "hu" ? "Magyar" : "English" })}
     </Button>
   );
