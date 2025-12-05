@@ -29,7 +29,7 @@ export function Logo({ className = "", animated = false, size = "md" }: LogoProp
   );
 
   const textElement = (
-    <h1 className={`gradient-text ${textSize} font-bold tracking-tight drop-shadow-lg`}>
+    <h1 className={`gradient-text ${textSize} tracking-tight drop-shadow-lg font-kavoon`}>
       MecCafé
     </h1>
   );
