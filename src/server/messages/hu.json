@@ -121,20 +121,16 @@
   },
   "login-form": {
     "title": "Bejelentkezés",
-    "subtitle": "Add meg az email címed, hogy kódot kapj",
+    "subtitle": "Add meg az email címed, hogy bejelentkezési linket kapj",
     "email": {
       "placeholder": "email@cimed.hu",
-      "sendOtp": "Kód küldése",
+      "sendLink": "Bejelentkezési link küldése",
       "sending": "Küldés..."
     },
-    "otpSent": {
+    "linkSent": {
       "title": "Nézd meg az emailjeidet!",
-      "message": "Bejelentkezési kódot küldtünk ide:"
-    },
-    "otp": {
-      "placeholder": "000000",
-      "verify": "Kód ellenőrzése",
-      "verifying": "Ellenőrzés...",
+      "message": "Bejelentkezési linket küldtünk ide:",
+      "instruction": "Kattints a linkre az emailben a bejelentkezéshez.",
       "backToEmail": "Vissza az emailhez"
     }
   },

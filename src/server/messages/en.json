@@ -121,20 +121,16 @@
   },
   "login-form": {
     "title": "Login",
-    "subtitle": "Enter your email to receive a login code",
+    "subtitle": "Enter your email to receive a magic link",
     "email": {
       "placeholder": "your@email.com",
-      "sendOtp": "Send Code",
+      "sendLink": "Send Magic Link",
       "sending": "Sending..."
     },
-    "otpSent": {
+    "linkSent": {
       "title": "Check your email!",
-      "message": "We sent a login code to"
-    },
-    "otp": {
-      "placeholder": "000000",
-      "verify": "Verify Code",
-      "verifying": "Verifying...",
+      "message": "We sent a magic link to",
+      "instruction": "Click the link in your email to sign in.",
       "backToEmail": "Back to email"
     }
   },

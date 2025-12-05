@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { HomeContent } from "@/components/home-content";
-import { Coffee, Users, Calendar, Sparkles } from "lucide-react";
+import { Users, Calendar, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
@@ -76,11 +76,15 @@ export default function Home(): React.ReactNode {
             transition={{ delay: 0.2 }}
           >
             <motion.div
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg overflow-hidden"
               whileHover={{ rotate: [0, -10, 10, 0] }}
               transition={{ duration: 0.5 }}
             >
-              <Coffee className="h-7 w-7 text-primary-foreground" />
+              <img
+                src="/logo.png"
+                alt="MecCafe Logo"
+                className="h-full w-full object-contain p-1"
+              />
             </motion.div>
             <h1 className="gradient-text text-4xl font-bold tracking-tight">
               MecCafe
