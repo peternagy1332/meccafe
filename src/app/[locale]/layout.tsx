@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logo.png",
   },
+  openGraph: {
+    images: ["/og.jpg"],
+  },
 };
 
 type Props = {
