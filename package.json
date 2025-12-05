@@ -21,6 +21,8 @@
     "motion": "^12.23.25",
     "next": "16.0.7",
     "next-intl": "^4.5.8",
+    "posthog-js": "^1.302.1",
+    "posthog-node": "^5.17.2",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "resend": "^6.5.2",
