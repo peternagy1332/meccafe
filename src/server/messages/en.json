@@ -238,5 +238,12 @@
     "avatarAlt": "Profile avatar",
     "gender": "Gender",
     "age": "Age"
+  },
+  "CookieConsent": {
+    "title": "We use cookies",
+    "description": "We use cookies to enhance your experience and for authentication. By clicking \"Accept All\", you consent to all cookies. Click \"Necessary Only\" for essential cookies only.",
+    "learnMore": "Learn more in our <privacyPolicy>Privacy Policy</privacyPolicy> and <terms>Terms of Service</terms>.",
+    "acceptAll": "Accept All",
+    "necessaryOnly": "Necessary Only"
   }
 }

@@ -4,6 +4,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 My literal old school, Mechwart András secondary technical school, invited me to give a lecture on "student day" and I chose a vibe coding introduction topic. So, if the app is full of security leaks and stuff like that, that's entirely possible because I live-coded this with a projector in front of them in about 1.5 hours.
 
+The site is accessible at [https://mec.cafe](https://mec.cafe).
+
 ## Getting Started
 
 First, run the development server:

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { Providers } from "@/components/providers";
 import { Footer } from "@/components/footer";
+import { CookieConsent } from "@/components/cookie-consent";
 import { routing } from "@/i18n/routing";
 
 const geistSans = Geist({
@@ -87,6 +88,7 @@ export default async function LocaleLayout({
           <Providers>
             <div className="flex-1">{children}</div>
             <Footer />
+            <CookieConsent />
           </Providers>
         </NextIntlClientProvider>
       </body>

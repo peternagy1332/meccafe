@@ -238,5 +238,12 @@
     "avatarAlt": "Profil avatar",
     "gender": "Nem",
     "age": "Kor"
+  },
+  "CookieConsent": {
+    "title": "Sütiket használunk",
+    "description": "Sütiket használunk a felhasználói élmény javítására és a hitelesítéshez. Az \"Összes elfogadása\" gombra kattintva hozzájárulsz az összes sütihez. A \"Csak szükségesek\" gombra kattintva csak az alapvető sütikhez.",
+    "learnMore": "További információ az <privacyPolicy>Adatvédelmi Tájékoztatóban</privacyPolicy> és az <terms>Általános Szerződési Feltételekben</terms>.",
+    "acceptAll": "Összes elfogadása",
+    "necessaryOnly": "Csak szükségesek"
   }
 }
