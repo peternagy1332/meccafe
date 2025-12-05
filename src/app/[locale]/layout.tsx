@@ -21,6 +21,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MecCafé",
   description: "MecCafé - Connect with fellow students over coffee",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 type Props = {
