@@ -3,67 +3,28 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { useTranslations } from "next-intl";
 import { Camera, RefreshCw, Save, Loader2 } from "lucide-react";
-
-const INTEREST_KEYS = [
-  "programming",
-  "music",
-  "sports",
-  "art",
-  "gaming",
-  "reading",
-  "cooking",
-  "travel",
-  "photography",
-  "films",
-  "science",
-  "languages",
-] as const;
-
-const INTEREST_EMOJIS: Record<string, string> = {
-  programming: "💻",
-  music: "🎵",
-  sports: "⚽",
-  art: "🎨",
-  gaming: "🎮",
-  reading: "📚",
-  cooking: "👨‍🍳",
-  travel: "✈️",
-  photography: "📷",
-  films: "🎬",
-  science: "🔬",
-  languages: "🌍",
-};
-
-const AGE_RANGES = [
-  { value: "range14to16", label: "14-16" },
-  { value: "range17to18", label: "17-18" },
-  { value: "range19to21", label: "19-21" },
-  { value: "range22plus", label: "22+" },
-] as const;
-
-const GENDER_KEYS = ["male", "female", "other"] as const;
-
-const GENDER_EMOJIS: Record<string, string> = {
-  male: "👨",
-  female: "👩",
-  other: "🧑",
-};
-
-type Interest = (typeof INTEREST_KEYS)[number];
-type AgeRange = (typeof AGE_RANGES)[number]["value"];
-type Gender = (typeof GENDER_KEYS)[number];
+import Image from "next/image";
+import {
+  INTEREST_KEYS,
+  INTEREST_EMOJIS,
+  AGE_RANGES,
+  GENDER_KEYS,
+  GENDER_EMOJIS,
+  type Interest,
+  type AgeRange,
+  type Gender,
+} from "@/lib/zod";
 
 type ProfileData = {
-  my_interests: string[];
-  my_gender: string;
-  my_age_range: string;
-  pref_interests: string[];
-  pref_gender: string | null;
-  pref_age_range: string | null;
+  my_interests: Interest[];
+  my_gender: Gender;
+  my_age_range: AgeRange;
+  pref_interests: Interest[];
+  pref_gender: Gender | null;
+  pref_age_range: AgeRange | null;
   avatar_path: string | null;
 };
 
@@ -78,8 +39,7 @@ export function PreferencesEditor({
   avatarUrl,
   onSaved,
 }: PreferencesEditorProps): React.ReactNode {
-  const t = useTranslations("preferences-editor");
-  const tReg = useTranslations("registration-form");
+  const t = useTranslations("PreferencesEditor");
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -226,13 +186,15 @@ export function PreferencesEditor({
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">{t("title")}</h3>
+          <h3 className="text-lg font-semibold">{t("title", { default: "Preferences" })}</h3>
           <Button onClick={() => setIsEditing(true)} variant="outline" size="sm">
-            {t("edit")}
+            {t("edit", { default: "Edit" })}
           </Button>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
-          <p className="text-sm text-muted-foreground">{t("viewMode.message")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("viewMode.message", { default: "Click Edit to modify your preferences and profile information." })}
+          </p>
         </div>
       </div>
     );
@@ -246,7 +208,9 @@ export function PreferencesEditor({
       transition={{ duration: 0.2 }}
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">{t("editing.title")}</h3>
+        <h3 className="text-lg font-semibold">
+          {t("editing.title", { default: "Editing Preferences" })}
+        </h3>
         <Button
           onClick={() => {
             setIsEditing(false);
@@ -255,17 +219,19 @@ export function PreferencesEditor({
           variant="ghost"
           size="sm"
         >
-          {t("editing.cancel")}
+          {t("editing.cancel", { default: "Cancel" })}
         </Button>
       </div>
 
       <div className="space-y-6">
         <div>
-          <h4 className="mb-3 text-sm font-medium">{t("sections.preferences")}</h4>
+          <h4 className="mb-3 text-sm font-medium">
+            {t("sections.preferences", { default: "What you're looking for" })}
+          </h4>
           <div className="space-y-4">
             <div>
               <label className="mb-2 block text-sm text-muted-foreground">
-                {t("labels.prefInterests")}
+                {t("labels.prefInterests", { default: "Preferred interests" })}
               </label>
               <div className="flex flex-wrap gap-2">
                 {INTEREST_KEYS.map((interest) => (
@@ -277,7 +243,11 @@ export function PreferencesEditor({
                     onClick={() => toggleInterest(interest, "pref")}
                   >
                     <span>{INTEREST_EMOJIS[interest]}</span>
-                    <span>{tReg(`interests.${interest}`)}</span>
+                    <span>
+                      {t(`interests.${interest}`, {
+                        default: INTEREST_KEYS.find((k) => k === interest) || interest,
+                      })}
+                    </span>
                   </Button>
                 ))}
               </div>
@@ -285,7 +255,7 @@ export function PreferencesEditor({
 
             <div>
               <label className="mb-2 block text-sm text-muted-foreground">
-                {t("labels.prefAgeRange")}
+                {t("labels.prefAgeRange", { default: "Preferred age range" })}
               </label>
               <div className="flex flex-wrap gap-2">
                 {AGE_RANGES.map((age) => (
@@ -306,7 +276,7 @@ export function PreferencesEditor({
 
             <div>
               <label className="mb-2 block text-sm text-muted-foreground">
-                {t("labels.prefGender")}
+                {t("labels.prefGender", { default: "Preferred gender" })}
               </label>
               <div className="flex flex-wrap gap-2">
                 {GENDER_KEYS.map((gender) => (
@@ -320,7 +290,16 @@ export function PreferencesEditor({
                     }
                   >
                     <span className="text-lg">{GENDER_EMOJIS[gender]}</span>
-                    <span>{tReg(`genders.${gender}`)}</span>
+                    <span>
+                      {t(`genders.${gender}`, {
+                        default:
+                          gender === "male"
+                            ? "Male"
+                            : gender === "female"
+                              ? "Female"
+                              : "Other",
+                      })}
+                    </span>
                   </Button>
                 ))}
                 <Button
@@ -331,7 +310,7 @@ export function PreferencesEditor({
                     setFormData((prev) => ({ ...prev, prefGender: null }))
                   }
                 >
-                  {tReg("genders.anyone")}
+                  {t("genders.anyone", { default: "Anyone" })}
                 </Button>
               </div>
             </div>
@@ -339,7 +318,9 @@ export function PreferencesEditor({
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-medium">{t("sections.myInfo")}</h4>
+          <h4 className="mb-3 text-sm font-medium">
+            {t("sections.myInfo", { default: "About you" })}
+          </h4>
           <div className="space-y-4">
             <div>
               <label className="mb-2 block text-sm text-muted-foreground">
@@ -355,7 +336,11 @@ export function PreferencesEditor({
                     onClick={() => toggleInterest(interest, "my")}
                   >
                     <span>{INTEREST_EMOJIS[interest]}</span>
-                    <span>{tReg(`interests.${interest}`)}</span>
+                    <span>
+                      {t(`interests.${interest}`, {
+                        default: INTEREST_KEYS.find((k) => k === interest) || interest,
+                      })}
+                    </span>
                   </Button>
                 ))}
               </div>
@@ -363,7 +348,7 @@ export function PreferencesEditor({
 
             <div>
               <label className="mb-2 block text-sm text-muted-foreground">
-                {t("labels.myGender")}
+                {t("labels.myGender", { default: "Your gender" })}
               </label>
               <div className="flex flex-wrap gap-2">
                 {GENDER_KEYS.map((gender) => (
@@ -377,7 +362,16 @@ export function PreferencesEditor({
                     }
                   >
                     <span className="text-lg">{GENDER_EMOJIS[gender]}</span>
-                    <span>{tReg(`genders.${gender}`)}</span>
+                    <span>
+                      {t(`genders.${gender}`, {
+                        default:
+                          gender === "male"
+                            ? "Male"
+                            : gender === "female"
+                              ? "Female"
+                              : "Other",
+                      })}
+                    </span>
                   </Button>
                 ))}
               </div>
@@ -406,15 +400,17 @@ export function PreferencesEditor({
 
             <div>
               <label className="mb-2 block text-sm text-muted-foreground">
-                {t("labels.avatar")}
+                {t("labels.avatar", { default: "Profile photo" })}
               </label>
               <canvas ref={canvasRef} className="hidden" />
               {formData.avatarPreview ? (
-                <div className="relative inline-block">
-                  <img
+                <div className="relative inline-block h-24 w-24">
+                  <Image
                     src={formData.avatarPreview}
-                    alt={t("avatar.alt")}
-                    className="h-24 w-24 rounded-full border-2 border-primary object-cover"
+                    alt={t("avatar.alt", { default: "Profile avatar" })}
+                    fill
+                    className="rounded-full border-2 border-primary object-cover"
+                    unoptimized
                   />
                   <motion.button
                     className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
@@ -441,13 +437,13 @@ export function PreferencesEditor({
                   </div>
                   <Button onClick={capturePhoto} size="sm">
                     <Camera className="h-4 w-4" />
-                    {t("avatar.takePhoto")}
+                    {t("avatar.takePhoto", { default: "Take Photo" })}
                   </Button>
                 </div>
               ) : (
                 <Button onClick={startCamera} variant="outline" size="sm">
                   <Camera className="h-4 w-4" />
-                  {t("avatar.changePhoto")}
+                  {t("avatar.changePhoto", { default: "Change Photo" })}
                 </Button>
               )}
             </div>
@@ -469,12 +465,12 @@ export function PreferencesEditor({
         {isLoading ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            {t("editing.saving")}
+            {t("editing.saving", { default: "Saving..." })}
           </>
         ) : (
           <>
             <Save className="h-4 w-4" />
-            {t("editing.save")}
+            {t("editing.save", { default: "Save Changes" })}
           </>
         )}
       </Button>

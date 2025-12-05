@@ -1,5 +1,5 @@
 {
-  "page": {
+  "Home": {
     "features": {
       "interestMatching": {
         "title": "Érdeklődés alapú párosítás",
@@ -20,16 +20,16 @@
       "titleHighlight": "kávé mellett",
       "description": "Találkozz hozzád hasonló diákokkal! Minden héten sorsolunk neked egy új beszélgetőpartnert egy kávéra. Építs valódi kapcsolatokat az iskolapadon túl is."
     },
-    "footer": "☕-val készült Debrecen diákjainak",
+    "login": "Bejelentkezés"
+  },
+  "HomeContent": {
     "welcomeBack": {
       "title": "Jó újra látni!",
       "message": "Már be vagy jelentkezve. Menj a vezérlőpultra, hogy megnézd a párosításaidat és frissítsd a beállításaidat.",
       "goToDashboard": "Vezérlőpult"
-    },
-    "alreadyHaveAccount": "Már van fiókod?",
-    "login": "Bejelentkezés"
+    }
   },
-  "registration-form": {
+  "RegistrationForm": {
     "interests": {
       "programming": "Programozás",
       "music": "Zene",
@@ -104,22 +104,32 @@
       "sentTo": "A megerősítő linket ide küldtük:",
       "instruction": "Kattints a linkre a regisztráció befejezéséhez és a párosítás indításához!"
     },
-    "preview": "Előnézet"
+    "preview": "Előnézet",
+    "terms": {
+      "agree": "Elfogadom az {tos} és az {pp}",
+      "error": "El kell fogadnod a feltételeket a folytatáshoz",
+      "pp": "Adatvédelmi Tájékoztatót",
+      "tos": "Általános Szerződési Feltételeket"
+    }
   },
   "layout": {
-    "title": "MecCafe",
+    "title": "MecCafé",
     "description": "Ismerkedj diáktársaiddal egy kávé mellett a Mechwart Andrásban, Debrecenben"
   },
-  "language-switcher": {
+  "Footer": {
+    "content": "<privacyPolicyLink>Adatvédelmi Tájékoztató</privacyPolicyLink> • <termsOfServiceLink>Általános Szerződési Feltételek</termsOfServiceLink>",
+    "attribution": "Készítette 🇪🇺 <peterLink>Peter</peterLink> ❤️ és ☕️ mellett"
+  },
+  "LanguageSwitcher": {
     "language": "Nyelv",
     "hu": "Magyar",
     "en": "English"
   },
-  "login-page": {
+  "LoginPage": {
     "noAccount": "Nincs még fiókod?",
     "register": "Regisztrálj itt"
   },
-  "login-form": {
+  "LoginForm": {
     "title": "Bejelentkezés",
     "subtitle": "Add meg az email címed a belépéshez",
     "email": {
@@ -134,7 +144,7 @@
       "backToEmail": "Vissza az emailhez"
     }
   },
-  "preferences-editor": {
+  "PreferencesEditor": {
     "title": "Beállítások",
     "edit": "Szerkesztés",
     "viewMode": {
@@ -185,7 +195,7 @@
       "changePhoto": "Fotó módosítása"
     }
   },
-  "matches-list": {
+  "MatchesList": {
     "title": "Korábbi párosítások",
     "loading": "Párosítások betöltése...",
     "empty": {
@@ -197,6 +207,32 @@
       "interests": "Érdeklődések",
       "gender": "Nem",
       "ageRange": "Kor"
+    },
+    "interests": {
+      "programming": "Programozás",
+      "music": "Zene",
+      "sports": "Sport",
+      "art": "Művészet",
+      "gaming": "Játék",
+      "reading": "Olvasás",
+      "cooking": "Főzés",
+      "travel": "Utazás",
+      "photography": "Fotózás",
+      "films": "Filmek",
+      "science": "Tudomány",
+      "languages": "Nyelvek"
     }
+  },
+  "PrivacyPolicyPage": {
+    "back": "Vissza"
+  },
+  "TermsOfServicePage": {
+    "back": "Vissza"
+  },
+  "DashboardContent": {
+    "title": "Profil",
+    "avatarAlt": "Profil avatar",
+    "gender": "Nem",
+    "age": "Kor"
   }
 }

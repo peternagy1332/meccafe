@@ -4,30 +4,11 @@ import {
   createServerSupabaseClient,
   createServiceRoleClient,
 } from "@/lib/supabase-server";
-
-const interestSchema = z.enum([
-  "programming",
-  "music",
-  "sports",
-  "art",
-  "gaming",
-  "reading",
-  "cooking",
-  "travel",
-  "photography",
-  "films",
-  "science",
-  "languages",
-]);
-
-const genderSchema = z.enum(["male", "female", "other"]);
-
-const ageRangeSchema = z.enum([
-  "range14to16",
-  "range17to18",
-  "range19to21",
-  "range22plus",
-]);
+import {
+  interestSchema,
+  genderSchema,
+  ageRangeSchema,
+} from "@/lib/zod";
 
 export const profileRouter = router({
   register: publicProcedure

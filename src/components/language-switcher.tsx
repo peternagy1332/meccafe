@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 
 export function LanguageSwitcher(): React.ReactNode {
-  const t = useTranslations("language-switcher");
+  const t = useTranslations("LanguageSwitcher");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -26,7 +26,7 @@ export function LanguageSwitcher(): React.ReactNode {
       className="gap-2"
     >
       <Globe className="h-4 w-4" />
-      {t(otherLocale)}
+      {t(otherLocale, { default: otherLocale === "hu" ? "Magyar" : "English" })}
     </Button>
   );
 }

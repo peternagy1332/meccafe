@@ -1,11 +1,17 @@
+import {
+  type Interest,
+  type Gender,
+  type AgeRange,
+} from "@/lib/zod";
+
 type Profile = {
   id: string;
-  my_interests: string[];
-  my_gender: string;
-  my_age_range: string;
-  pref_interests: string[];
-  pref_gender: string | null;
-  pref_age_range: string | null;
+  my_interests: Interest[];
+  my_gender: Gender;
+  my_age_range: AgeRange;
+  pref_interests: Interest[];
+  pref_gender: Gender | null;
+  pref_age_range: AgeRange | null;
 };
 
 function satisfiesGenderPreference(

@@ -5,6 +5,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { Providers } from "@/components/providers";
+import { Footer } from "@/components/footer";
 import { routing } from "@/i18n/routing";
 
 const geistSans = Geist({
@@ -18,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MecCafe",
-  description: "MecCafe - Connect with fellow students over coffee",
+  title: "MecCafé",
+  description: "MecCafé - Connect with fellow students over coffee",
 };
 
 type Props = {
@@ -48,10 +49,13 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex min-h-screen flex-col`}
       >
         <NextIntlClientProvider messages={messages}>
-          <Providers>{children}</Providers>
+          <Providers>
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

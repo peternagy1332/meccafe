@@ -1,5 +1,5 @@
 {
-  "page": {
+  "Home": {
     "features": {
       "interestMatching": {
         "title": "Interest Matching",
@@ -20,16 +20,16 @@
       "titleHighlight": "coffee",
       "description": "Meet fellow students who share your interests. Every week, we match you with someone new for a coffee chat. Build real connections beyond the classroom."
     },
-    "footer": "Made with ☕ for students of Debrecen",
+    "login": "Login"
+  },
+  "HomeContent": {
     "welcomeBack": {
       "title": "Welcome Back!",
       "message": "You're already logged in. Go to your dashboard to view your matches and update your preferences.",
       "goToDashboard": "Go to Dashboard"
-    },
-    "alreadyHaveAccount": "Already have an account?",
-    "login": "Login"
+    }
   },
-  "registration-form": {
+  "RegistrationForm": {
     "interests": {
       "programming": "Programming",
       "music": "Music",
@@ -104,22 +104,32 @@
       "sentTo": "We sent a magic link to",
       "instruction": "Click the link to complete your registration and get matched!"
     },
-    "preview": "Preview"
+    "preview": "Preview",
+    "terms": {
+      "agree": "I agree to the {tos} and {pp}",
+      "error": "You must accept the terms to continue",
+      "pp": "Privacy Policy",
+      "tos": "Terms of Service"
+    }
   },
   "layout": {
-    "title": "MecCafe",
+    "title": "MecCafé",
     "description": "Connect with fellow students over coffee at Mechwart András, Debrecen"
   },
-  "language-switcher": {
+  "Footer": {
+    "content": "<privacyPolicyLink>Privacy Policy</privacyPolicyLink> • <termsOfServiceLink>Terms of Service</termsOfServiceLink>",
+    "attribution": "Made in 🇪🇺 by <peterLink>Peter</peterLink> with ❤️ and ☕️"
+  },
+  "LanguageSwitcher": {
     "language": "Language",
     "hu": "Magyar",
     "en": "English"
   },
-  "login-page": {
+  "LoginPage": {
     "noAccount": "Don't have an account?",
     "register": "Register here"
   },
-  "login-form": {
+  "LoginForm": {
     "title": "Login",
     "subtitle": "Enter your email to receive a magic link",
     "email": {
@@ -134,7 +144,7 @@
       "backToEmail": "Back to email"
     }
   },
-  "preferences-editor": {
+  "PreferencesEditor": {
     "title": "Preferences",
     "edit": "Edit",
     "viewMode": {
@@ -185,7 +195,7 @@
       "changePhoto": "Change Photo"
     }
   },
-  "matches-list": {
+  "MatchesList": {
     "title": "Previous Matches",
     "loading": "Loading matches...",
     "empty": {
@@ -197,6 +207,32 @@
       "interests": "Interests",
       "gender": "Gender",
       "ageRange": "Age"
+    },
+    "interests": {
+      "programming": "Programming",
+      "music": "Music",
+      "sports": "Sports",
+      "art": "Art",
+      "gaming": "Gaming",
+      "reading": "Reading",
+      "cooking": "Cooking",
+      "travel": "Travel",
+      "photography": "Photography",
+      "films": "Films",
+      "science": "Science",
+      "languages": "Languages"
     }
+  },
+  "PrivacyPolicyPage": {
+    "back": "Back"
+  },
+  "TermsOfServicePage": {
+    "back": "Back"
+  },
+  "DashboardContent": {
+    "title": "Profile",
+    "avatarAlt": "Profile avatar",
+    "gender": "Gender",
+    "age": "Age"
   }
 }

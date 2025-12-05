@@ -1,4 +1,11 @@
 import { Resend } from "resend";
+import {
+  AGE_RANGE_LABELS,
+  GENDER_LABELS,
+  type Interest,
+  type Gender,
+  type AgeRange,
+} from "@/lib/zod";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -6,23 +13,10 @@ type ProfileWithEmail = {
   id: string;
   name: string | null;
   avatar_path: string | null;
-  my_interests: string[];
-  my_gender: string;
-  my_age_range: string;
+  my_interests: Interest[];
+  my_gender: Gender;
+  my_age_range: AgeRange;
   email: string;
-};
-
-const AGE_RANGE_LABELS: Record<string, string> = {
-  range14to16: "14-16",
-  range17to18: "17-18",
-  range19to21: "19-21",
-  range22plus: "22+",
-};
-
-const GENDER_LABELS: Record<string, string> = {
-  male: "Male",
-  female: "Female",
-  other: "Other",
 };
 
 function formatInterests(interests: string[]): string {
@@ -45,7 +39,7 @@ export async function sendMatchEmail(
   const avatarUrl = getAvatarUrl(match.avatar_path);
 
   const { error } = await resend.emails.send({
-    from: "MacCafe <matches@maccafe.hu>",
+    from: "MecCafé <peter@mec.cafe>",
     to: recipient.email,
     subject: `You have a new match: ${matchName}!`,
     html: `
@@ -71,7 +65,7 @@ export async function sendMatchEmail(
         </div>
         
         <p style="color: #999; font-size: 12px; text-align: center;">
-          This email was sent by MacCafe matching system.
+          This email was sent by MecCafé matching system.
         </p>
       </div>
     `,

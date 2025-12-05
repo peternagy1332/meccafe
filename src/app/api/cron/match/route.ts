@@ -1,6 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { findBestMatch } from "@/lib/matching";
 import { sendMatchEmail } from "@/lib/resend";
+import {
+  type Interest,
+  type Gender,
+  type AgeRange,
+} from "@/lib/zod";
 
 const BATCH_SIZE = 100;
 const MATCH_COOLDOWN_DAYS = 7;
@@ -10,12 +15,12 @@ type ProfileRow = {
   auth_id: string;
   name: string | null;
   avatar_path: string | null;
-  my_interests: string[];
-  my_gender: string;
-  my_age_range: string;
-  pref_interests: string[];
-  pref_gender: string | null;
-  pref_age_range: string | null;
+  my_interests: Interest[];
+  my_gender: Gender;
+  my_age_range: AgeRange;
+  pref_interests: Interest[];
+  pref_gender: Gender | null;
+  pref_age_range: AgeRange | null;
   matched_at: string | null;
 };
 

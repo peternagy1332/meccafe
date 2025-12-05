@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Coffee, Calendar } from "lucide-react";
+import Image from "next/image";
 import { trpc } from "@/lib/trpc";
 
 const INTEREST_EMOJIS: Record<string, string> = {
@@ -26,14 +27,15 @@ function getAvatarUrl(avatarPath: string | null): string | null {
 }
 
 export function MatchesList(): React.ReactNode {
-  const t = useTranslations("matches-list");
-  const tReg = useTranslations("registration-form");
+  const t = useTranslations("MatchesList");
   const { data: matches, isLoading } = trpc.profile.getMyMatches.useQuery();
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-muted-foreground">{t("loading")}</div>
+        <div className="text-muted-foreground">
+          {t("loading", { default: "Loading matches..." })}
+        </div>
       </div>
     );
   }
@@ -56,7 +58,9 @@ export function MatchesList(): React.ReactNode {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">{t("title")}</h3>
+      <h3 className="text-lg font-semibold">
+        {t("title", { default: "Previous Matches" })}
+      </h3>
       <div className="space-y-3">
         {matches.map((match, index) => {
           const avatarUrl = getAvatarUrl(match.partner.avatarPath);
@@ -78,10 +82,12 @@ export function MatchesList(): React.ReactNode {
               <div className="flex items-start gap-4">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-primary">
                   {avatarUrl ? (
-                    <img
+                    <Image
                       src={avatarUrl}
-                      alt={t("match.avatarAlt")}
-                      className="h-full w-full object-cover"
+                      alt={t("match.avatarAlt", { default: "Match avatar" })}
+                      fill
+                      className="object-cover"
+                      unoptimized
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-muted">
@@ -96,7 +102,7 @@ export function MatchesList(): React.ReactNode {
                   </div>
                   <div className="mb-2">
                     <p className="text-sm font-medium text-foreground">
-                      {t("match.interests")}
+                      {t("match.interests", { default: "Interests" })}
                     </p>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {(match.partner.interests as string[]).map((interest) => (
@@ -105,13 +111,18 @@ export function MatchesList(): React.ReactNode {
                           className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs"
                         >
                           <span>{INTEREST_EMOJIS[interest] || "•"}</span>
-                          <span>{tReg(`interests.${interest}`)}</span>
+                          <span>
+                            {t(`interests.${interest}`, {
+                              default: interest,
+                            })}
+                          </span>
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {t("match.gender")}: {match.partner.gender} • {t("match.ageRange")}:{" "}
+                    {t("match.gender", { default: "Gender" })}: {match.partner.gender} •{" "}
+                    {t("match.ageRange", { default: "Age" })}:{" "}
                     {match.partner.ageRange}
                   </div>
                 </div>

@@ -5,6 +5,9 @@ import { HomeContent } from "@/components/home-content";
 import { Users, Calendar, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function FloatingBean({
   className,
@@ -43,13 +46,18 @@ const FEATURE_ICONS = [Users, Calendar, Sparkles] as const;
 const FEATURE_KEYS = ["interestMatching", "weeklyMatches", "realConnections"] as const;
 
 export default function Home(): React.ReactNode {
-  const t = useTranslations("page");
+  const t = useTranslations("Home");
 
   return (
     <div className="noise-overlay relative min-h-screen overflow-hidden bg-background">
-      {/* Language Switcher */}
-      <div className="absolute right-4 top-4 z-10">
+      {/* Language Switcher and Login Button */}
+      <div className="absolute right-4 top-4 z-10 flex items-center gap-4">
         <LanguageSwitcher />
+        <Link href="/login">
+          <Button variant="outline" size="sm">
+            {t("login", { default: "Login" })}
+          </Button>
+        </Link>
       </div>
 
       {/* Floating decorations */}
@@ -70,25 +78,12 @@ export default function Home(): React.ReactNode {
         >
           {/* Logo */}
           <motion.div
-            className="mb-6 flex items-center gap-3"
+            className="mb-6"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <motion.div
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg overflow-hidden"
-              whileHover={{ rotate: [0, -10, 10, 0] }}
-              transition={{ duration: 0.5 }}
-            >
-              <img
-                src="/logo.png"
-                alt="MecCafe Logo"
-                className="h-full w-full object-contain p-1"
-              />
-            </motion.div>
-            <h1 className="gradient-text text-4xl font-bold tracking-tight">
-              MecCafe
-            </h1>
+            <Logo className="justify-center lg:justify-start" animated size="md" />
           </motion.div>
 
           {/* Tagline */}
@@ -107,8 +102,10 @@ export default function Home(): React.ReactNode {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            {t("hero.title")}{" "}
-            <span className="gradient-text">{t("hero.titleHighlight")}</span>
+            {t("hero.title", { default: "Connect over" })}{" "}
+            <span className="gradient-text">
+              {t("hero.titleHighlight", { default: "coffee" })}
+            </span>
           </motion.h2>
 
           <motion.p
@@ -117,7 +114,10 @@ export default function Home(): React.ReactNode {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            {t("hero.description")}
+            {t("hero.description", {
+              default:
+                "Meet fellow students who share your interests. Every week, we match you with someone new for a coffee chat. Build real connections beyond the classroom.",
+            })}
           </motion.p>
 
           {/* Features */}
@@ -142,10 +142,24 @@ export default function Home(): React.ReactNode {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">
-                      {t(`features.${key}.title`)}
+                      {t(`features.${key}.title`, {
+                        default:
+                          key === "interestMatching"
+                            ? "Interest Matching"
+                            : key === "weeklyMatches"
+                              ? "Weekly Matches"
+                              : "Real Connections",
+                      })}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {t(`features.${key}.description`)}
+                      {t(`features.${key}.description`, {
+                        default:
+                          key === "interestMatching"
+                            ? "Get matched with students who share your passions"
+                            : key === "weeklyMatches"
+                              ? "New coffee partner suggestions every week"
+                              : "Turn online matches into real-life friendships",
+                      })}
                     </p>
                   </div>
                 </motion.div>
@@ -157,16 +171,6 @@ export default function Home(): React.ReactNode {
         {/* Right side - Registration form or Dashboard link */}
         <HomeContent />
       </main>
-
-      {/* Footer hint */}
-      <motion.div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-sm text-muted-foreground"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-      >
-        {t("footer")}
-      </motion.div>
     </div>
   );
 }

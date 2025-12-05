@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,55 +17,16 @@ import {
   RefreshCw,
   Sparkles,
 } from "lucide-react";
-
-const INTEREST_KEYS = [
-  "programming",
-  "music",
-  "sports",
-  "art",
-  "gaming",
-  "reading",
-  "cooking",
-  "travel",
-  "photography",
-  "films",
-  "science",
-  "languages",
-] as const;
-
-const INTEREST_EMOJIS: Record<string, string> = {
-  programming: "💻",
-  music: "🎵",
-  sports: "⚽",
-  art: "🎨",
-  gaming: "🎮",
-  reading: "📚",
-  cooking: "👨‍🍳",
-  travel: "✈️",
-  photography: "📷",
-  films: "🎬",
-  science: "🔬",
-  languages: "🌍",
-};
-
-const AGE_RANGES = [
-  { value: "range14to16", label: "14-16" },
-  { value: "range17to18", label: "17-18" },
-  { value: "range19to21", label: "19-21" },
-  { value: "range22plus", label: "22+" },
-] as const;
-
-const GENDER_KEYS = ["male", "female", "other"] as const;
-
-const GENDER_EMOJIS: Record<string, string> = {
-  male: "👨",
-  female: "👩",
-  other: "🧑",
-};
-
-type Interest = (typeof INTEREST_KEYS)[number];
-type AgeRange = (typeof AGE_RANGES)[number]["value"];
-type Gender = (typeof GENDER_KEYS)[number];
+import {
+  INTEREST_KEYS,
+  INTEREST_EMOJIS,
+  AGE_RANGES,
+  GENDER_KEYS,
+  GENDER_EMOJIS,
+  type Interest,
+  type AgeRange,
+  type Gender,
+} from "@/lib/zod";
 
 type FormData = {
   prefInterests: Interest[];
@@ -76,6 +38,7 @@ type FormData = {
   avatar: File | null;
   avatarPreview: string | null;
   email: string;
+  acceptedTerms: boolean;
 };
 
 const STEP_KEYS = [
@@ -90,7 +53,7 @@ const STEP_KEYS = [
 ] as const;
 
 export function RegistrationForm(): React.ReactNode {
-  const t = useTranslations("registration-form");
+  const t = useTranslations("RegistrationForm");
 
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
@@ -111,6 +74,7 @@ export function RegistrationForm(): React.ReactNode {
     avatar: null,
     avatarPreview: null,
     email: "",
+    acceptedTerms: false,
   });
 
   const stopCamera = (): void => {
@@ -191,7 +155,7 @@ export function RegistrationForm(): React.ReactNode {
       case 7:
         return formData.avatar !== null;
       case 8:
-        return formData.email.includes("@");
+        return formData.email.includes("@") && formData.acceptedTerms;
       default:
         return false;
     }
@@ -293,13 +257,14 @@ export function RegistrationForm(): React.ReactNode {
           transition={{ delay: 0.4 }}
         >
           <h3 className="mb-2 text-2xl font-bold text-foreground">
-            {t("success.title")}
+            {t("success.title", { default: "Check your email!" })}
           </h3>
           <p className="text-muted-foreground">
-            {t("success.sentTo")} <strong>{formData.email}</strong>
+            {t("success.sentTo", { default: "We sent a magic link to" })}{" "}
+            <strong>{formData.email}</strong>
           </p>
           <p className="mt-4 text-sm text-muted-foreground">
-            {t("success.instruction")}
+            {t("success.instruction", { default: "Click the link to complete your registration and get matched!" })}
           </p>
         </motion.div>
         <motion.div
@@ -415,7 +380,11 @@ export function RegistrationForm(): React.ReactNode {
                       }
                     >
                       <span>{INTEREST_EMOJIS[interest]}</span>
-                      <span>{t(`interests.${interest}`)}</span>
+                      <span>
+                        {t(`interests.${interest}`, {
+                          default: INTEREST_KEYS.find((k) => k === interest) || interest,
+                        })}
+                      </span>
                     </Button>
                   </motion.div>
                 ))}
@@ -493,7 +462,16 @@ export function RegistrationForm(): React.ReactNode {
                       className="min-w-[100px]"
                     >
                       <span className="text-xl">{GENDER_EMOJIS[gender]}</span>
-                      <span>{t(`genders.${gender}`)}</span>
+                      <span>
+                        {t(`genders.${gender}`, {
+                          default:
+                            gender === "male"
+                              ? "Male"
+                              : gender === "female"
+                                ? "Female"
+                                : "Other",
+                        })}
+                      </span>
                     </Button>
                   </motion.div>
                 ))}
@@ -513,7 +491,7 @@ export function RegistrationForm(): React.ReactNode {
                       className="min-w-[100px]"
                     >
                       <Sparkles className="h-5 w-5" />
-                      <span>{t("genders.anyone")}</span>
+                      <span>{t("genders.anyone", { default: "Anyone" })}</span>
                     </Button>
                   </motion.div>
                 )}
@@ -539,7 +517,7 @@ export function RegistrationForm(): React.ReactNode {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={formData.avatarPreview!}
-                      alt={t("preview")}
+                      alt={t("preview", { default: "Preview" })}
                       className="h-40 w-40 rounded-full border-4 border-primary object-cover shadow-lg"
                     />
                     <motion.button
@@ -577,7 +555,7 @@ export function RegistrationForm(): React.ReactNode {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Camera className="h-5 w-5" />
-                      {t("camera.takePhoto")}
+                      {t("camera.takePhoto", { default: "Take Photo" })}
                     </motion.button>
                   </motion.div>
                 ) : (
@@ -588,11 +566,13 @@ export function RegistrationForm(): React.ReactNode {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Camera className="h-8 w-8" />
-                    <span className="text-sm font-medium">{t("camera.startCamera")}</span>
+                    <span className="text-sm font-medium">
+                      {t("camera.startCamera", { default: "Start Camera" })}
+                    </span>
                   </motion.button>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  {t("camera.photoHelp")}
+                  {t("camera.photoHelp", { default: "Your photo helps others recognize you" })}
                 </p>
               </motion.div>
             )}
@@ -611,7 +591,7 @@ export function RegistrationForm(): React.ReactNode {
                 <div className="w-full max-w-xs">
                   <Input
                     type="email"
-                    placeholder={t("email.placeholder")}
+                    placeholder={t("email.placeholder", { default: "your@email.com" })}
                     value={formData.email}
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, email: e.target.value }))
@@ -619,8 +599,48 @@ export function RegistrationForm(): React.ReactNode {
                     className="text-center"
                   />
                 </div>
+
+                <div className="flex items-start gap-2 max-w-xs text-left">
+                  <div className="flex h-5 items-center">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      checked={formData.acceptedTerms}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          acceptedTerms: e.target.checked,
+                        }))
+                      }
+                      className="h-4 w-4 rounded border-primary text-primary focus:ring-primary"
+                    />
+                  </div>
+                  <label htmlFor="terms" className="text-xs text-muted-foreground">
+                    {t.rich("terms.agree", {
+                      tos: (chunks) => (
+                        <Link
+                          href="/terms-of-service"
+                          className="text-primary hover:underline"
+                          target="_blank"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                      pp: (chunks) => (
+                        <Link
+                          href="/privacy-policy"
+                          className="text-primary hover:underline"
+                          target="_blank"
+                        >
+                          {chunks}
+                        </Link>
+                      ),
+                    })}
+                  </label>
+                </div>
+
                 <p className="max-w-xs text-center text-xs text-muted-foreground">
-                  {t("email.help")}
+                  {t("email.help", { default: "We'll send you a magic link to verify your email and complete registration" })}
                 </p>
               </motion.div>
             )}
@@ -637,12 +657,12 @@ export function RegistrationForm(): React.ReactNode {
           className={step === 1 ? "invisible" : ""}
         >
           <ArrowLeft className="h-4 w-4" />
-          {t("navigation.back")}
+          {t("navigation.back", { default: "Back" })}
         </Button>
 
         {step < 8 ? (
           <Button onClick={nextStep} disabled={!canProceed()}>
-            {t("navigation.next")}
+            {t("navigation.next", { default: "Next" })}
             <ArrowRight className="h-4 w-4" />
           </Button>
         ) : (
@@ -659,12 +679,12 @@ export function RegistrationForm(): React.ReactNode {
                 >
                   <Coffee className="h-4 w-4" />
                 </motion.div>
-                {t("navigation.sending")}
+                {t("navigation.sending", { default: "Sending..." })}
               </>
             ) : (
               <>
                 <Sparkles className="h-4 w-4" />
-                {t("navigation.getMatched")}
+                {t("navigation.getMatched", { default: "Get Matched" })}
               </>
             )}
           </Button>

@@ -9,7 +9,7 @@ import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 
 export function LoginForm(): React.ReactNode {
-  const t = useTranslations("login-form");
+  const t = useTranslations("LoginForm");
   const [email, setEmail] = useState("");
   const [linkSent, setLinkSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,13 +59,14 @@ export function LoginForm(): React.ReactNode {
             </div>
           </motion.div>
           <h2 className="mb-2 text-2xl font-bold text-foreground">
-            {t("linkSent.title")}
+            {t("linkSent.title", { default: "Check your email!" })}
           </h2>
           <p className="text-muted-foreground">
-            {t("linkSent.message")} <strong>{email}</strong>
+            {t("linkSent.message", { default: "We sent a magic link to" })}{" "}
+            <strong>{email}</strong>
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            {t("linkSent.instruction")}
+            {t("linkSent.instruction", { default: "Click the link in your email to sign in." })}
           </p>
           {error && (
             <p className="mt-2 text-sm text-destructive">{error}</p>
@@ -80,7 +81,7 @@ export function LoginForm(): React.ReactNode {
           }}
           disabled={isLoading}
         >
-          {t("linkSent.backToEmail")}
+          {t("linkSent.backToEmail", { default: "Back to email" })}
         </Button>
       </motion.div>
     );
@@ -95,9 +96,11 @@ export function LoginForm(): React.ReactNode {
     >
       <div className="text-center">
         <h2 className="mb-2 text-2xl font-bold text-foreground">
-          {t("title")}
+            {t("title", { default: "Login" })}
         </h2>
-        <p className="text-muted-foreground">{t("subtitle")}</p>
+        <p className="text-muted-foreground">
+          {t("subtitle", { default: "Enter your email to receive a magic link" })}
+        </p>
         {error && (
           <p className="mt-2 text-sm text-destructive">{error}</p>
         )}
@@ -106,7 +109,7 @@ export function LoginForm(): React.ReactNode {
       <div className="flex flex-col gap-4">
         <Input
           type="email"
-          placeholder={t("email.placeholder")}
+          placeholder={t("email.placeholder", { default: "your@email.com" })}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading}
@@ -124,11 +127,11 @@ export function LoginForm(): React.ReactNode {
           {isLoading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              {t("email.sending")}
+              {t("email.sending", { default: "Sending..." })}
             </>
           ) : (
             <>
-              {t("email.sendLink")}
+              {t("email.sendLink", { default: "Send Magic Link" })}
               <ArrowRight className="h-4 w-4" />
             </>
           )}

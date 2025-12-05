@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 
 export function HomeContent(): React.ReactNode {
-  const t = useTranslations("page");
+  const t = useTranslations("HomeContent");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -53,14 +53,14 @@ export function HomeContent(): React.ReactNode {
             </motion.div>
             <div>
               <h3 className="mb-2 text-2xl font-bold text-foreground">
-                {t("welcomeBack.title")}
+                {t("welcomeBack.title", { default: "Welcome Back!" })}
               </h3>
               <p className="mb-6 text-muted-foreground">
-                {t("welcomeBack.message")}
+                {t("welcomeBack.message", { default: "You're already logged in. Go to your dashboard to view your matches and update your preferences." })}
               </p>
               <Link href="/dashboard">
                 <Button className="w-full">
-                  {t("welcomeBack.goToDashboard")}
+                  {t("welcomeBack.goToDashboard", { default: "Go to Dashboard" })}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
@@ -85,16 +85,6 @@ export function HomeContent(): React.ReactNode {
         transition={{ delay: 0.4 }}
       >
         <RegistrationForm />
-        <div className="mt-6 border-t border-border pt-6 text-center">
-          <p className="mb-4 text-sm text-muted-foreground">
-            {t("alreadyHaveAccount")}
-          </p>
-          <Link href="/login">
-            <Button variant="outline" className="w-full">
-              {t("login")}
-            </Button>
-          </Link>
-        </div>
       </motion.div>
     </motion.div>
   );

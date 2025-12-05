@@ -4,10 +4,11 @@ import { motion } from "motion/react";
 import { LoginForm } from "@/components/login-form";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { Logo } from "@/components/logo";
 import Link from "next/link";
 
 export default function LoginPage(): React.ReactNode {
-  const t = useTranslations("login-page");
+  const t = useTranslations("LoginPage");
 
   return (
     <div className="noise-overlay relative min-h-screen overflow-hidden bg-background">
@@ -23,25 +24,12 @@ export default function LoginPage(): React.ReactNode {
           transition={{ duration: 0.6 }}
         >
           <motion.div
-            className="mb-8 flex items-center justify-center gap-3"
+            className="mb-8"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <motion.div
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg overflow-hidden"
-              whileHover={{ rotate: [0, -10, 10, 0] }}
-              transition={{ duration: 0.5 }}
-            >
-              <img
-                src="/logo.png"
-                alt="MecCafe Logo"
-                className="h-full w-full object-contain p-1"
-              />
-            </motion.div>
-            <h1 className="gradient-text text-4xl font-bold tracking-tight">
-              MecCafe
-            </h1>
+            <Logo className="justify-center" animated size="md" />
           </motion.div>
 
           <motion.div
@@ -59,9 +47,9 @@ export default function LoginPage(): React.ReactNode {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            {t("noAccount")}{" "}
+            {t("noAccount", { default: "Don't have an account?" })}{" "}
             <Link href="/" className="text-primary hover:underline">
-              {t("register")}
+              {t("register", { default: "Register here" })}
             </Link>
           </motion.div>
         </motion.div>

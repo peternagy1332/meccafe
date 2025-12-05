@@ -5,15 +5,24 @@ import { PreferencesEditor } from "@/components/preferences-editor";
 import { MatchesList } from "@/components/matches-list";
 import { trpc } from "@/lib/trpc";
 import { Coffee } from "lucide-react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import {
+  type Interest,
+  type Gender,
+  type AgeRange,
+  AGE_RANGE_LABELS,
+  GENDER_LABELS,
+} from "@/lib/zod";
 
 type ProfileData = {
   id: string;
-  my_interests: string[];
-  my_gender: string;
-  my_age_range: string;
-  pref_interests: string[];
-  pref_gender: string | null;
-  pref_age_range: string | null;
+  my_interests: Interest[];
+  my_gender: Gender;
+  my_age_range: AgeRange;
+  pref_interests: Interest[];
+  pref_gender: Gender | null;
+  pref_age_range: AgeRange | null;
   avatar_path: string | null;
 };
 
@@ -26,6 +35,8 @@ export function DashboardContent({
   profile,
   avatarUrl,
 }: DashboardContentProps): React.ReactNode {
+  const t = useTranslations("DashboardContent");
+  const tPrefs = useTranslations("PreferencesEditor");
   const utils = trpc.useUtils();
 
   const handlePreferencesSaved = (): void => {
@@ -42,14 +53,16 @@ export function DashboardContent({
         transition={{ duration: 0.4 }}
       >
         <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
-          <h2 className="mb-4 text-2xl font-bold">Profile</h2>
+          <h2 className="mb-4 text-2xl font-bold">{t("title", { default: "Profile" })}</h2>
           <div className="flex flex-col items-center gap-4">
             <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-primary shadow-lg">
               {avatarUrl ? (
-                <img
+                <Image
                   src={avatarUrl}
-                  alt="Profile avatar"
-                  className="h-full w-full object-cover"
+                  alt={t("avatarAlt", { default: "Profile avatar" })}
+                  fill
+                  className="object-cover"
+                  unoptimized
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-muted">
@@ -58,8 +71,12 @@ export function DashboardContent({
               )}
             </div>
             <div className="text-center">
-              <p className="text-sm text-muted-foreground">Gender: {profile.my_gender}</p>
-              <p className="text-sm text-muted-foreground">Age: {profile.my_age_range}</p>
+              <p className="text-sm text-muted-foreground">
+                {t("gender", { default: "Gender" })}: {tPrefs(`genders.${profile.my_gender}`, { default: GENDER_LABELS[profile.my_gender] })}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t("age", { default: "Age" })}: {AGE_RANGE_LABELS[profile.my_age_range]}
+              </p>
             </div>
           </div>
         </div>
