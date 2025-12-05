@@ -149,6 +149,22 @@ export async function GET(request: Request): Promise<Response> {
 
     if (resultB.success) emailsSent++;
     else if (resultB.error) errors.push(resultB.error);
+
+    const profileIdA = profileA.id;
+    const profileIdB = profileB.id;
+    const orderedId1 = profileIdA < profileIdB ? profileIdA : profileIdB;
+    const orderedId2 = profileIdA < profileIdB ? profileIdB : profileIdA;
+
+    await supabase.from("matches").upsert(
+      {
+        user1_profile_id: orderedId1,
+        user2_profile_id: orderedId2,
+        matched_at: new Date().toISOString(),
+      },
+      {
+        onConflict: "user1_profile_id,user2_profile_id",
+      }
+    );
   }
 
   if (matchedIds.size > 0) {

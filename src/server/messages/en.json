@@ -20,7 +20,14 @@
       "titleHighlight": "coffee",
       "description": "Meet fellow students who share your interests. Every week, we match you with someone new for a coffee chat. Build real connections beyond the classroom."
     },
-    "footer": "Made with ☕ for students of Debrecen"
+    "footer": "Made with ☕ for students of Debrecen",
+    "welcomeBack": {
+      "title": "Welcome Back!",
+      "message": "You're already logged in. Go to your dashboard to view your matches and update your preferences.",
+      "goToDashboard": "Go to Dashboard"
+    },
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Login"
   },
   "registration-form": {
     "interests": {
@@ -107,5 +114,93 @@
     "language": "Language",
     "hu": "Magyar",
     "en": "English"
+  },
+  "login-page": {
+    "noAccount": "Don't have an account?",
+    "register": "Register here"
+  },
+  "login-form": {
+    "title": "Login",
+    "subtitle": "Enter your email to receive a login code",
+    "email": {
+      "placeholder": "your@email.com",
+      "sendOtp": "Send Code",
+      "sending": "Sending..."
+    },
+    "otpSent": {
+      "title": "Check your email!",
+      "message": "We sent a login code to"
+    },
+    "otp": {
+      "placeholder": "000000",
+      "verify": "Verify Code",
+      "verifying": "Verifying...",
+      "backToEmail": "Back to email"
+    }
+  },
+  "preferences-editor": {
+    "title": "Preferences",
+    "edit": "Edit",
+    "viewMode": {
+      "message": "Click Edit to modify your preferences and profile information."
+    },
+    "editing": {
+      "title": "Editing Preferences",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "sections": {
+      "preferences": "What you're looking for",
+      "myInfo": "About you"
+    },
+    "labels": {
+      "prefInterests": "Preferred interests",
+      "prefAgeRange": "Preferred age range",
+      "prefGender": "Preferred gender",
+      "myInterests": "Your interests",
+      "myGender": "Your gender",
+      "myAgeRange": "Your age range",
+      "avatar": "Profile photo"
+    },
+    "interests": {
+      "programming": "Programming",
+      "music": "Music",
+      "sports": "Sports",
+      "art": "Art",
+      "gaming": "Gaming",
+      "reading": "Reading",
+      "cooking": "Cooking",
+      "travel": "Travel",
+      "photography": "Photography",
+      "films": "Films",
+      "science": "Science",
+      "languages": "Languages"
+    },
+    "genders": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "anyone": "Anyone"
+    },
+    "avatar": {
+      "alt": "Profile avatar",
+      "takePhoto": "Take Photo",
+      "changePhoto": "Change Photo"
+    }
+  },
+  "matches-list": {
+    "title": "Previous Matches",
+    "loading": "Loading matches...",
+    "empty": {
+      "title": "No matches yet",
+      "message": "You'll see your matches here once you've been matched with someone!"
+    },
+    "match": {
+      "avatarAlt": "Match avatar",
+      "interests": "Interests",
+      "gender": "Gender",
+      "ageRange": "Age"
+    }
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { RegistrationForm } from "@/components/registration-form";
+import { HomeContent } from "@/components/home-content";
 import { Coffee, Users, Calendar, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -150,22 +150,8 @@ export default function Home(): React.ReactNode {
           </motion.div>
         </motion.div>
 
-        {/* Right side - Registration form */}
-        <motion.div
-          className="w-full max-w-md"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-        >
-          <motion.div
-            className="rounded-3xl border border-border bg-card p-8 shadow-2xl shadow-primary/5"
-            initial={{ y: 20 }}
-            animate={{ y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <RegistrationForm />
-          </motion.div>
-        </motion.div>
+        {/* Right side - Registration form or Dashboard link */}
+        <HomeContent />
       </main>
 
       {/* Footer hint */}

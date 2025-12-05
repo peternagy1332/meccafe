@@ -20,7 +20,14 @@
       "titleHighlight": "kávé",
       "description": "Találkozz hasonló érdeklődésű diákokkal. Minden héten egy új személlyel párosítunk egy kávés beszélgetésre. Építs valódi kapcsolatokat az osztálytermen túl."
     },
-    "footer": "☕-val készült Debrecen diákjainak"
+    "footer": "☕-val készült Debrecen diákjainak",
+    "welcomeBack": {
+      "title": "Üdv újra!",
+      "message": "Már be vagy jelentkezve. Menj az irányítópultra, hogy megnézd a párosításaidat és frissítsd a beállításaidat.",
+      "goToDashboard": "Irányítópult"
+    },
+    "alreadyHaveAccount": "Már van fiókod?",
+    "login": "Bejelentkezés"
   },
   "registration-form": {
     "interests": {
@@ -107,5 +114,93 @@
     "language": "Nyelv",
     "hu": "Magyar",
     "en": "English"
+  },
+  "login-page": {
+    "noAccount": "Nincs még fiókod?",
+    "register": "Regisztrálj itt"
+  },
+  "login-form": {
+    "title": "Bejelentkezés",
+    "subtitle": "Add meg az email címed, hogy kódot kapj",
+    "email": {
+      "placeholder": "email@cimed.hu",
+      "sendOtp": "Kód küldése",
+      "sending": "Küldés..."
+    },
+    "otpSent": {
+      "title": "Nézd meg az emailjeidet!",
+      "message": "Bejelentkezési kódot küldtünk ide:"
+    },
+    "otp": {
+      "placeholder": "000000",
+      "verify": "Kód ellenőrzése",
+      "verifying": "Ellenőrzés...",
+      "backToEmail": "Vissza az emailhez"
+    }
+  },
+  "preferences-editor": {
+    "title": "Beállítások",
+    "edit": "Szerkesztés",
+    "viewMode": {
+      "message": "Kattints a Szerkesztés gombra a beállításaid és profilinformációid módosításához."
+    },
+    "editing": {
+      "title": "Beállítások szerkesztése",
+      "cancel": "Mégse",
+      "save": "Változások mentése",
+      "saving": "Mentés..."
+    },
+    "sections": {
+      "preferences": "Mit keresel",
+      "myInfo": "Rólad"
+    },
+    "labels": {
+      "prefInterests": "Preferált érdeklődések",
+      "prefAgeRange": "Preferált korosztály",
+      "prefGender": "Preferált nem",
+      "myInterests": "A te érdeklődésed",
+      "myGender": "A te nemed",
+      "myAgeRange": "A te korosztályod",
+      "avatar": "Profilfotó"
+    },
+    "interests": {
+      "programming": "Programozás",
+      "music": "Zene",
+      "sports": "Sport",
+      "art": "Művészet",
+      "gaming": "Játék",
+      "reading": "Olvasás",
+      "cooking": "Főzés",
+      "travel": "Utazás",
+      "photography": "Fotózás",
+      "films": "Filmek",
+      "science": "Tudomány",
+      "languages": "Nyelvek"
+    },
+    "genders": {
+      "male": "Férfi",
+      "female": "Nő",
+      "other": "Egyéb",
+      "anyone": "Bárki"
+    },
+    "avatar": {
+      "alt": "Profil avatar",
+      "takePhoto": "Fotó készítése",
+      "changePhoto": "Fotó módosítása"
+    }
+  },
+  "matches-list": {
+    "title": "Korábbi párosítások",
+    "loading": "Párosítások betöltése...",
+    "empty": {
+      "title": "Még nincsenek párosítások",
+      "message": "Itt fogod látni a párosításaidat, miután valakivel párosítottunk!"
+    },
+    "match": {
+      "avatarAlt": "Párosítás avatar",
+      "interests": "Érdeklődések",
+      "gender": "Nem",
+      "ageRange": "Kor"
+    }
   }
 }
