@@ -1,6 +1,9 @@
 import { z } from "zod/v4";
 import { publicProcedure, router } from "../trpc";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import {
+  createServerSupabaseClient,
+  createServiceRoleClient,
+} from "@/lib/supabase-server";
 
 const interestSchema = z.enum([
   "programming",
@@ -27,30 +30,61 @@ const ageRangeSchema = z.enum([
 ]);
 
 export const profileRouter = router({
-  create: publicProcedure
+  register: publicProcedure
     .input(
       z.object({
+        email: z.email(),
         myInterests: z.array(interestSchema).min(1),
         myGender: genderSchema,
         myAgeRange: ageRangeSchema,
         prefInterests: z.array(interestSchema).min(1),
         prefGender: genderSchema.nullable(),
         prefAgeRange: ageRangeSchema.nullable(),
-        avatarPath: z.string().nullable(),
+        avatarBase64: z.string(),
+        avatarContentType: z.string(),
       })
     )
     .mutation(async ({ input }) => {
       const supabase = await createServerSupabaseClient();
+      const serviceClient = createServiceRoleClient();
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: input.email,
+      });
 
-      if (!user) {
-        throw new Error("Not authenticated");
+      if (otpError) {
+        throw new Error(otpError.message);
       }
 
-      const { data, error } = await supabase
+      const { data: userData, error: userError } =
+        await serviceClient.auth.admin.listUsers();
+
+      if (userError) {
+        throw new Error(userError.message);
+      }
+
+      const user = userData.users.find((u) => u.email === input.email);
+
+      if (!user) {
+        throw new Error("User not found after OTP");
+      }
+
+      const buffer = Buffer.from(input.avatarBase64, "base64");
+      const extension = input.avatarContentType.split("/")[1] || "jpg";
+      const avatarPath = `${user.id}.${extension}`;
+
+      const { error: uploadError } = await serviceClient.storage
+        .from("avatars")
+        .upload(avatarPath, buffer, {
+          contentType: input.avatarContentType,
+          upsert: true,
+        });
+
+      if (uploadError) {
+        throw new Error(uploadError.message);
+      }
+
+      const { error: profileError } = await serviceClient
         .from("profiles")
         .upsert({
           auth_id: user.id,
@@ -60,52 +94,14 @@ export const profileRouter = router({
           pref_interests: input.prefInterests,
           pref_gender: input.prefGender,
           pref_age_range: input.prefAgeRange,
-          avatar_path: input.avatarPath,
-        })
-        .select()
-        .single();
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      return data;
-    }),
-
-  uploadAvatar: publicProcedure
-    .input(
-      z.object({
-        base64: z.string(),
-        contentType: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const supabase = await createServerSupabaseClient();
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        throw new Error("Not authenticated");
-      }
-
-      const buffer = Buffer.from(input.base64, "base64");
-      const extension = input.contentType.split("/")[1] || "jpg";
-      const path = `${user.id}.${extension}`;
-
-      const { error } = await supabase.storage
-        .from("avatars")
-        .upload(path, buffer, {
-          contentType: input.contentType,
-          upsert: true,
+          avatar_path: avatarPath,
         });
 
-      if (error) {
-        throw new Error(error.message);
+      if (profileError) {
+        throw new Error(profileError.message);
       }
 
-      return { path };
+      return { success: true };
     }),
 
   getMyProfile: publicProcedure.query(async () => {

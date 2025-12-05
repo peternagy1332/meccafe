@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/lib/supabase";
+import { trpc } from "@/lib/trpc";
+import { useTranslations } from "next-intl";
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,20 +17,35 @@ import {
   Sparkles,
 } from "lucide-react";
 
-const INTERESTS = [
-  { value: "programming", label: "Programming", emoji: "💻" },
-  { value: "music", label: "Music", emoji: "🎵" },
-  { value: "sports", label: "Sports", emoji: "⚽" },
-  { value: "art", label: "Art", emoji: "🎨" },
-  { value: "gaming", label: "Gaming", emoji: "🎮" },
-  { value: "reading", label: "Reading", emoji: "📚" },
-  { value: "cooking", label: "Cooking", emoji: "👨‍🍳" },
-  { value: "travel", label: "Travel", emoji: "✈️" },
-  { value: "photography", label: "Photography", emoji: "📷" },
-  { value: "films", label: "Films", emoji: "🎬" },
-  { value: "science", label: "Science", emoji: "🔬" },
-  { value: "languages", label: "Languages", emoji: "🌍" },
+const INTEREST_KEYS = [
+  "programming",
+  "music",
+  "sports",
+  "art",
+  "gaming",
+  "reading",
+  "cooking",
+  "travel",
+  "photography",
+  "films",
+  "science",
+  "languages",
 ] as const;
+
+const INTEREST_EMOJIS: Record<string, string> = {
+  programming: "💻",
+  music: "🎵",
+  sports: "⚽",
+  art: "🎨",
+  gaming: "🎮",
+  reading: "📚",
+  cooking: "👨‍🍳",
+  travel: "✈️",
+  photography: "📷",
+  films: "🎬",
+  science: "🔬",
+  languages: "🌍",
+};
 
 const AGE_RANGES = [
   { value: "range14to16", label: "14-16" },
@@ -38,15 +54,17 @@ const AGE_RANGES = [
   { value: "range22plus", label: "22+" },
 ] as const;
 
-const GENDERS = [
-  { value: "male", label: "Male", emoji: "👨" },
-  { value: "female", label: "Female", emoji: "👩" },
-  { value: "other", label: "Other", emoji: "🧑" },
-] as const;
+const GENDER_KEYS = ["male", "female", "other"] as const;
 
-type Interest = (typeof INTERESTS)[number]["value"];
+const GENDER_EMOJIS: Record<string, string> = {
+  male: "👨",
+  female: "👩",
+  other: "🧑",
+};
+
+type Interest = (typeof INTEREST_KEYS)[number];
 type AgeRange = (typeof AGE_RANGES)[number]["value"];
-type Gender = (typeof GENDERS)[number]["value"];
+type Gender = (typeof GENDER_KEYS)[number];
 
 type FormData = {
   prefInterests: Interest[];
@@ -60,30 +78,20 @@ type FormData = {
   email: string;
 };
 
-const STEPS = [
-  {
-    id: 1,
-    title: "What interests you?",
-    subtitle: "Pick interests your ideal coffee partner should have",
-  },
-  {
-    id: 2,
-    title: "Age preference?",
-    subtitle: "What age range are you looking for?",
-  },
-  {
-    id: 3,
-    title: "Gender preference?",
-    subtitle: "Who would you like to meet?",
-  },
-  { id: 4, title: "Your interests?", subtitle: "Tell us what you're into" },
-  { id: 5, title: "Your gender?", subtitle: "How do you identify?" },
-  { id: 6, title: "Your age?", subtitle: "What's your age range?" },
-  { id: 7, title: "Show yourself!", subtitle: "Take a quick selfie" },
-  { id: 8, title: "Almost there!", subtitle: "Enter your email to get matched" },
+const STEP_KEYS = [
+  "prefInterests",
+  "prefAge",
+  "prefGender",
+  "myInterests",
+  "myGender",
+  "myAge",
+  "avatar",
+  "email",
 ] as const;
 
 export function RegistrationForm(): React.ReactNode {
+  const t = useTranslations("registration-form");
+
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -146,8 +154,6 @@ export function RegistrationForm(): React.ReactNode {
 
     const offsetX = (video.videoWidth - size) / 2;
     const offsetY = (video.videoHeight - size) / 2;
-    ctx.translate(size, 0);
-    ctx.scale(-1, 1);
     ctx.drawImage(video, offsetX, offsetY, size, size, 0, 0, size, size);
 
     canvas.toBlob((blob) => {
@@ -167,11 +173,6 @@ export function RegistrationForm(): React.ReactNode {
     return () => stopCamera();
   }, []);
 
-  useEffect(() => {
-    if (step !== 7) {
-      stopCamera();
-    }
-  }, [step]);
 
   const canProceed = (): boolean => {
     switch (step) {
@@ -180,7 +181,7 @@ export function RegistrationForm(): React.ReactNode {
       case 2:
         return formData.prefAgeRange !== null;
       case 3:
-        return true; // Optional
+        return true;
       case 4:
         return formData.myInterests.length > 0;
       case 5:
@@ -198,6 +199,7 @@ export function RegistrationForm(): React.ReactNode {
 
   const nextStep = (): void => {
     if (step < 8 && canProceed()) {
+      if (step === 7) stopCamera();
       setDirection(1);
       setStep(step + 1);
     }
@@ -205,6 +207,7 @@ export function RegistrationForm(): React.ReactNode {
 
   const prevStep = (): void => {
     if (step > 1) {
+      if (step === 7) stopCamera();
       setDirection(-1);
       setStep(step - 1);
     }
@@ -223,36 +226,34 @@ export function RegistrationForm(): React.ReactNode {
     }));
   };
 
+  const registerMutation = trpc.profile.register.useMutation({
+    onSuccess: () => setIsComplete(true),
+    onError: (error) => console.error("Error:", error),
+    onSettled: () => setIsLoading(false),
+  });
+
   const handleSubmit = async (): Promise<void> => {
-    if (!canProceed()) return;
+    if (!canProceed() || !formData.avatar) return;
 
     setIsLoading(true);
 
-    try {
-      const supabase = createClient();
+    const reader = new FileReader();
+    reader.onload = (): void => {
+      const base64 = (reader.result as string).split(",")[1];
 
-      const { error } = await supabase.auth.signInWithOtp({
+      registerMutation.mutate({
         email: formData.email,
-        options: {
-          data: {
-            prefInterests: formData.prefInterests,
-            prefAgeRange: formData.prefAgeRange,
-            prefGender: formData.prefGender,
-            myInterests: formData.myInterests,
-            myGender: formData.myGender,
-            myAgeRange: formData.myAgeRange,
-          },
-        },
+        myInterests: formData.myInterests,
+        myGender: formData.myGender!,
+        myAgeRange: formData.myAgeRange!,
+        prefInterests: formData.prefInterests,
+        prefGender: formData.prefGender,
+        prefAgeRange: formData.prefAgeRange,
+        avatarBase64: base64,
+        avatarContentType: formData.avatar!.type,
       });
-
-      if (error) throw error;
-
-      setIsComplete(true);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+    reader.readAsDataURL(formData.avatar);
   };
 
   const slideVariants = {
@@ -292,13 +293,13 @@ export function RegistrationForm(): React.ReactNode {
           transition={{ delay: 0.4 }}
         >
           <h3 className="mb-2 text-2xl font-bold text-foreground">
-            Check your email!
+            {t("success.title")}
           </h3>
           <p className="text-muted-foreground">
-            We sent a magic link to <strong>{formData.email}</strong>
+            {t("success.sentTo")} <strong>{formData.email}</strong>
           </p>
           <p className="mt-4 text-sm text-muted-foreground">
-            Click the link to complete your registration and get matched!
+            {t("success.instruction")}
           </p>
         </motion.div>
         <motion.div
@@ -327,22 +328,24 @@ export function RegistrationForm(): React.ReactNode {
     );
   }
 
+  const currentStepKey = STEP_KEYS[step - 1];
+
   return (
     <div className="flex flex-col">
       {/* Progress */}
       <div className="mb-8 flex justify-center gap-2">
-        {STEPS.map((s) => (
+        {STEP_KEYS.map((_, index) => (
           <motion.div
-            key={s.id}
+            key={index}
             className={`h-2 w-2 rounded-full ${
-              s.id === step
+              index + 1 === step
                 ? "bg-primary"
-                : s.id < step
+                : index + 1 < step
                   ? "bg-primary/50"
                   : "bg-muted"
             }`}
             animate={{
-              scale: s.id === step ? 1.3 : 1,
+              scale: index + 1 === step ? 1.3 : 1,
             }}
             transition={{ type: "spring", stiffness: 300 }}
           />
@@ -369,7 +372,7 @@ export function RegistrationForm(): React.ReactNode {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                {STEPS[step - 1].title}
+                {t(`steps.${currentStepKey}.title`)}
               </motion.h2>
               <motion.p
                 className="mb-6 text-sm text-muted-foreground"
@@ -377,7 +380,7 @@ export function RegistrationForm(): React.ReactNode {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                {STEPS[step - 1].subtitle}
+                {t(`steps.${currentStepKey}.subtitle`)}
               </motion.p>
             </div>
 
@@ -389,9 +392,9 @@ export function RegistrationForm(): React.ReactNode {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                {INTERESTS.map((interest, i) => (
+                {INTEREST_KEYS.map((interest, i) => (
                   <motion.div
-                    key={interest.value}
+                    key={interest}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.05 * i }}
@@ -401,18 +404,18 @@ export function RegistrationForm(): React.ReactNode {
                       size="chip"
                       selected={
                         step === 1
-                          ? formData.prefInterests.includes(interest.value)
-                          : formData.myInterests.includes(interest.value)
+                          ? formData.prefInterests.includes(interest)
+                          : formData.myInterests.includes(interest)
                       }
                       onClick={() =>
                         toggleInterest(
-                          interest.value,
+                          interest,
                           step === 1 ? "pref" : "my"
                         )
                       }
                     >
-                      <span>{interest.emoji}</span>
-                      <span>{interest.label}</span>
+                      <span>{INTEREST_EMOJIS[interest]}</span>
+                      <span>{t(`interests.${interest}`)}</span>
                     </Button>
                   </motion.div>
                 ))}
@@ -466,9 +469,9 @@ export function RegistrationForm(): React.ReactNode {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                {GENDERS.map((gender, i) => (
+                {GENDER_KEYS.map((gender, i) => (
                   <motion.div
-                    key={gender.value}
+                    key={gender}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * i }}
@@ -478,19 +481,19 @@ export function RegistrationForm(): React.ReactNode {
                       size="lg"
                       selected={
                         step === 3
-                          ? formData.prefGender === gender.value
-                          : formData.myGender === gender.value
+                          ? formData.prefGender === gender
+                          : formData.myGender === gender
                       }
                       onClick={() =>
                         setFormData((prev) => ({
                           ...prev,
-                          [step === 3 ? "prefGender" : "myGender"]: gender.value,
+                          [step === 3 ? "prefGender" : "myGender"]: gender,
                         }))
                       }
                       className="min-w-[100px]"
                     >
-                      <span className="text-xl">{gender.emoji}</span>
-                      <span>{gender.label}</span>
+                      <span className="text-xl">{GENDER_EMOJIS[gender]}</span>
+                      <span>{t(`genders.${gender}`)}</span>
                     </Button>
                   </motion.div>
                 ))}
@@ -510,7 +513,7 @@ export function RegistrationForm(): React.ReactNode {
                       className="min-w-[100px]"
                     >
                       <Sparkles className="h-5 w-5" />
-                      <span>Anyone</span>
+                      <span>{t("genders.anyone")}</span>
                     </Button>
                   </motion.div>
                 )}
@@ -533,9 +536,10 @@ export function RegistrationForm(): React.ReactNode {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring" }}
                   >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={formData.avatarPreview}
-                      alt="Preview"
+                      src={formData.avatarPreview!}
+                      alt={t("preview")}
                       className="h-40 w-40 rounded-full border-4 border-primary object-cover shadow-lg"
                     />
                     <motion.button
@@ -573,7 +577,7 @@ export function RegistrationForm(): React.ReactNode {
                       whileTap={{ scale: 0.95 }}
                     >
                       <Camera className="h-5 w-5" />
-                      Take Photo
+                      {t("camera.takePhoto")}
                     </motion.button>
                   </motion.div>
                 ) : (
@@ -584,11 +588,11 @@ export function RegistrationForm(): React.ReactNode {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Camera className="h-8 w-8" />
-                    <span className="text-sm font-medium">Start Camera</span>
+                    <span className="text-sm font-medium">{t("camera.startCamera")}</span>
                   </motion.button>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Your photo helps others recognize you
+                  {t("camera.photoHelp")}
                 </p>
               </motion.div>
             )}
@@ -607,7 +611,7 @@ export function RegistrationForm(): React.ReactNode {
                 <div className="w-full max-w-xs">
                   <Input
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder={t("email.placeholder")}
                     value={formData.email}
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, email: e.target.value }))
@@ -616,8 +620,7 @@ export function RegistrationForm(): React.ReactNode {
                   />
                 </div>
                 <p className="max-w-xs text-center text-xs text-muted-foreground">
-                  We&apos;ll send you a magic link to verify your email and
-                  complete registration
+                  {t("email.help")}
                 </p>
               </motion.div>
             )}
@@ -634,12 +637,12 @@ export function RegistrationForm(): React.ReactNode {
           className={step === 1 ? "invisible" : ""}
         >
           <ArrowLeft className="h-4 w-4" />
-          Back
+          {t("navigation.back")}
         </Button>
 
         {step < 8 ? (
           <Button onClick={nextStep} disabled={!canProceed()}>
-            Next
+            {t("navigation.next")}
             <ArrowRight className="h-4 w-4" />
           </Button>
         ) : (
@@ -656,12 +659,12 @@ export function RegistrationForm(): React.ReactNode {
                 >
                   <Coffee className="h-4 w-4" />
                 </motion.div>
-                Sending...
+                {t("navigation.sending")}
               </>
             ) : (
               <>
                 <Sparkles className="h-4 w-4" />
-                Get Matched
+                {t("navigation.getMatched")}
               </>
             )}
           </Button>

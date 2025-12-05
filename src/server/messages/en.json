@@ -1,0 +1,111 @@
+{
+  "page": {
+    "features": {
+      "interestMatching": {
+        "title": "Interest Matching",
+        "description": "Get matched with students who share your passions"
+      },
+      "weeklyMatches": {
+        "title": "Weekly Matches",
+        "description": "New coffee partner suggestions every week"
+      },
+      "realConnections": {
+        "title": "Real Connections",
+        "description": "Turn online matches into real-life friendships"
+      }
+    },
+    "hero": {
+      "tagline": "Mechwart András • Debrecen",
+      "title": "Connect over",
+      "titleHighlight": "coffee",
+      "description": "Meet fellow students who share your interests. Every week, we match you with someone new for a coffee chat. Build real connections beyond the classroom."
+    },
+    "footer": "Made with ☕ for students of Debrecen"
+  },
+  "registration-form": {
+    "interests": {
+      "programming": "Programming",
+      "music": "Music",
+      "sports": "Sports",
+      "art": "Art",
+      "gaming": "Gaming",
+      "reading": "Reading",
+      "cooking": "Cooking",
+      "travel": "Travel",
+      "photography": "Photography",
+      "films": "Films",
+      "science": "Science",
+      "languages": "Languages"
+    },
+    "genders": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "anyone": "Anyone"
+    },
+    "steps": {
+      "prefInterests": {
+        "title": "What interests you?",
+        "subtitle": "Pick interests your ideal coffee partner should have"
+      },
+      "prefAge": {
+        "title": "Age preference?",
+        "subtitle": "What age range are you looking for?"
+      },
+      "prefGender": {
+        "title": "Gender preference?",
+        "subtitle": "Who would you like to meet?"
+      },
+      "myInterests": {
+        "title": "Your interests?",
+        "subtitle": "Tell us what you're into"
+      },
+      "myGender": {
+        "title": "Your gender?",
+        "subtitle": "How do you identify?"
+      },
+      "myAge": {
+        "title": "Your age?",
+        "subtitle": "What's your age range?"
+      },
+      "avatar": {
+        "title": "Show yourself!",
+        "subtitle": "Take a quick selfie"
+      },
+      "email": {
+        "title": "Almost there!",
+        "subtitle": "Enter your email to get matched"
+      }
+    },
+    "camera": {
+      "takePhoto": "Take Photo",
+      "startCamera": "Start Camera",
+      "photoHelp": "Your photo helps others recognize you"
+    },
+    "email": {
+      "placeholder": "your@email.com",
+      "help": "We'll send you a magic link to verify your email and complete registration"
+    },
+    "navigation": {
+      "back": "Back",
+      "next": "Next",
+      "sending": "Sending...",
+      "getMatched": "Get Matched"
+    },
+    "success": {
+      "title": "Check your email!",
+      "sentTo": "We sent a magic link to",
+      "instruction": "Click the link to complete your registration and get matched!"
+    },
+    "preview": "Preview"
+  },
+  "layout": {
+    "title": "MecCafe",
+    "description": "Connect with fellow students over coffee at Mechwart András, Debrecen"
+  },
+  "language-switcher": {
+    "language": "Language",
+    "hu": "Magyar",
+    "en": "English"
+  }
+}

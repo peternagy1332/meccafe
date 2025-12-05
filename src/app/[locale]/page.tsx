@@ -3,24 +3,8 @@
 import { motion } from "motion/react";
 import { RegistrationForm } from "@/components/registration-form";
 import { Coffee, Users, Calendar, Sparkles } from "lucide-react";
-
-const FEATURES = [
-  {
-    icon: Users,
-    title: "Interest Matching",
-    description: "Get matched with students who share your passions",
-  },
-  {
-    icon: Calendar,
-    title: "Weekly Matches",
-    description: "New coffee partner suggestions every week",
-  },
-  {
-    icon: Sparkles,
-    title: "Real Connections",
-    description: "Turn online matches into real-life friendships",
-  },
-];
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 function FloatingBean({
   className,
@@ -55,9 +39,19 @@ function FloatingBean({
   );
 }
 
+const FEATURE_ICONS = [Users, Calendar, Sparkles] as const;
+const FEATURE_KEYS = ["interestMatching", "weeklyMatches", "realConnections"] as const;
+
 export default function Home(): React.ReactNode {
+  const t = useTranslations("page");
+
   return (
     <div className="noise-overlay relative min-h-screen overflow-hidden bg-background">
+      {/* Language Switcher */}
+      <div className="absolute right-4 top-4 z-10">
+        <LanguageSwitcher />
+      </div>
+
       {/* Floating decorations */}
       <FloatingBean className="absolute left-[10%] top-[15%]" delay={0} />
       <FloatingBean className="absolute right-[15%] top-[20%]" delay={0.5} />
@@ -100,7 +94,7 @@ export default function Home(): React.ReactNode {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Mechwart András • Debrecen
+            {t("hero.tagline")}
           </motion.p>
 
           <motion.h2
@@ -109,8 +103,8 @@ export default function Home(): React.ReactNode {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            Connect over{" "}
-            <span className="gradient-text">coffee</span>
+            {t("hero.title")}{" "}
+            <span className="gradient-text">{t("hero.titleHighlight")}</span>
           </motion.h2>
 
           <motion.p
@@ -119,9 +113,7 @@ export default function Home(): React.ReactNode {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            Meet fellow students who share your interests. Every week, we match
-            you with someone new for a coffee chat. Build real connections
-            beyond the classroom.
+            {t("hero.description")}
           </motion.p>
 
           {/* Features */}
@@ -131,27 +123,30 @@ export default function Home(): React.ReactNode {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            {FEATURES.map((feature, i) => (
-              <motion.div
-                key={feature.title}
-                className="flex items-center gap-4"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 + i * 0.1 }}
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                  <feature.icon className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {feature.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+            {FEATURE_KEYS.map((key, i) => {
+              const Icon = FEATURE_ICONS[i];
+              return (
+                <motion.div
+                  key={key}
+                  className="flex items-center gap-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 + i * 0.1 }}
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">
+                      {t(`features.${key}.title`)}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {t(`features.${key}.description`)}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </motion.div>
 
@@ -180,7 +175,7 @@ export default function Home(): React.ReactNode {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
       >
-        Made with ☕ for students of Debrecen
+        {t("footer")}
       </motion.div>
     </div>
   );

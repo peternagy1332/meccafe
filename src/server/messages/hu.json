@@ -1,0 +1,111 @@
+{
+  "page": {
+    "features": {
+      "interestMatching": {
+        "title": "Érdeklődés alapú párosítás",
+        "description": "Találkozz olyan diákokkal, akik hasonló dolgok iránt érdeklődnek"
+      },
+      "weeklyMatches": {
+        "title": "Heti párosítások",
+        "description": "Minden héten új kávépartner ajánlások"
+      },
+      "realConnections": {
+        "title": "Valódi kapcsolatok",
+        "description": "Alakíts online ismeretségekből élő barátságokat"
+      }
+    },
+    "hero": {
+      "tagline": "Mechwart András • Debrecen",
+      "title": "Ismerkedj egy",
+      "titleHighlight": "kávé",
+      "description": "Találkozz hasonló érdeklődésű diákokkal. Minden héten egy új személlyel párosítunk egy kávés beszélgetésre. Építs valódi kapcsolatokat az osztálytermen túl."
+    },
+    "footer": "☕-val készült Debrecen diákjainak"
+  },
+  "registration-form": {
+    "interests": {
+      "programming": "Programozás",
+      "music": "Zene",
+      "sports": "Sport",
+      "art": "Művészet",
+      "gaming": "Játék",
+      "reading": "Olvasás",
+      "cooking": "Főzés",
+      "travel": "Utazás",
+      "photography": "Fotózás",
+      "films": "Filmek",
+      "science": "Tudomány",
+      "languages": "Nyelvek"
+    },
+    "genders": {
+      "male": "Férfi",
+      "female": "Nő",
+      "other": "Egyéb",
+      "anyone": "Bárki"
+    },
+    "steps": {
+      "prefInterests": {
+        "title": "Mi érdekel?",
+        "subtitle": "Válaszd ki, milyen érdeklődésű kávépartnert keresel"
+      },
+      "prefAge": {
+        "title": "Életkori preferencia?",
+        "subtitle": "Milyen korosztályt keresel?"
+      },
+      "prefGender": {
+        "title": "Nem preferencia?",
+        "subtitle": "Kivel szeretnél találkozni?"
+      },
+      "myInterests": {
+        "title": "A te érdeklődésed?",
+        "subtitle": "Mondd el, mi érdekel téged"
+      },
+      "myGender": {
+        "title": "A te nemed?",
+        "subtitle": "Hogyan azonosítod magad?"
+      },
+      "myAge": {
+        "title": "A te korod?",
+        "subtitle": "Milyen korosztályba tartozol?"
+      },
+      "avatar": {
+        "title": "Mutasd meg magad!",
+        "subtitle": "Készíts egy gyors szelfit"
+      },
+      "email": {
+        "title": "Már majdnem kész!",
+        "subtitle": "Add meg az email címed a párosításhoz"
+      }
+    },
+    "camera": {
+      "takePhoto": "Fotó készítése",
+      "startCamera": "Kamera indítása",
+      "photoHelp": "A fotód segít másoknak felismerni téged"
+    },
+    "email": {
+      "placeholder": "email@cimed.hu",
+      "help": "Küldünk egy mágikus linket az email címed megerősítéséhez és a regisztráció befejezéséhez"
+    },
+    "navigation": {
+      "back": "Vissza",
+      "next": "Tovább",
+      "sending": "Küldés...",
+      "getMatched": "Párosítás"
+    },
+    "success": {
+      "title": "Nézd meg az emailjeidet!",
+      "sentTo": "Mágikus linket küldtünk ide:",
+      "instruction": "Kattints a linkre a regisztráció befejezéséhez és a párosításhoz!"
+    },
+    "preview": "Előnézet"
+  },
+  "layout": {
+    "title": "MecCafe",
+    "description": "Ismerkedj diáktársaiddal egy kávé mellett a Mechwart Andrásban, Debrecenben"
+  },
+  "language-switcher": {
+    "language": "Nyelv",
+    "hu": "Magyar",
+    "en": "English"
+  }
+}
