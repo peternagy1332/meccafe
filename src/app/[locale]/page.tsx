@@ -130,7 +130,7 @@ export default function Home(): React.ReactNode {
           </motion.h2>
 
           <motion.p
-            className="mb-8 max-w-md text-lg text-muted-foreground"
+            className="mb-4 max-w-md text-lg text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
@@ -140,6 +140,24 @@ export default function Home(): React.ReactNode {
                 "Meet fellow students who share your interests. Every week, we match you with someone new for a coffee chat. Build real connections beyond the classroom.",
             })}
           </motion.p>
+
+          <motion.div
+            className="mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            <a
+              href="/plakat.pdf"
+              download
+              className="text-sm text-primary hover:underline"
+            >
+              {t("hero.poster", {
+                default:
+                  "Want to spread the word? Download and print our poster to hang in your school or share it with others!",
+              })}
+            </a>
+          </motion.div>
 
           {/* Features */}
           <motion.div
