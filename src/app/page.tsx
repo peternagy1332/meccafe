@@ -1,65 +1,187 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { motion } from "motion/react";
+import { RegistrationForm } from "@/components/registration-form";
+import { Coffee, Users, Calendar, Sparkles } from "lucide-react";
+
+const FEATURES = [
+  {
+    icon: Users,
+    title: "Interest Matching",
+    description: "Get matched with students who share your passions",
+  },
+  {
+    icon: Calendar,
+    title: "Weekly Matches",
+    description: "New coffee partner suggestions every week",
+  },
+  {
+    icon: Sparkles,
+    title: "Real Connections",
+    description: "Turn online matches into real-life friendships",
+  },
+];
+
+function FloatingBean({
+  className,
+  delay = 0,
+}: {
+  className?: string;
+  delay?: number;
+}): React.ReactNode {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: delay + 0.5 }}
+    >
+      <motion.span
+        className="inline-block text-4xl opacity-20"
+        animate={{
+          y: [0, -15, 0],
+          rotate: [0, 10, 0],
+        }}
+        transition={{
+          duration: 4,
+          delay,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        ☕
+      </motion.span>
+    </motion.div>
+  );
+}
+
+export default function Home(): React.ReactNode {
+  return (
+    <div className="noise-overlay relative min-h-screen overflow-hidden bg-background">
+      {/* Floating decorations */}
+      <FloatingBean className="absolute left-[10%] top-[15%]" delay={0} />
+      <FloatingBean className="absolute right-[15%] top-[20%]" delay={0.5} />
+      <FloatingBean className="absolute left-[20%] bottom-[25%]" delay={1} />
+      <FloatingBean className="absolute right-[10%] bottom-[15%]" delay={1.5} />
+      <FloatingBean className="absolute left-[5%] top-[50%]" delay={2} />
+
+      {/* Main content */}
+      <main className="relative mx-auto flex min-h-screen max-w-7xl flex-col items-center gap-8 px-6 py-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16 lg:py-0">
+        {/* Left side - Hero info */}
+        <motion.div
+          className="flex max-w-xl flex-col items-center text-center lg:items-start lg:text-left"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          {/* Logo */}
+          <motion.div
+            className="mb-6 flex items-center gap-3"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <motion.div
+              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg"
+              whileHover={{ rotate: [0, -10, 10, 0] }}
+              transition={{ duration: 0.5 }}
+            >
+              <Coffee className="h-7 w-7 text-primary-foreground" />
+            </motion.div>
+            <h1 className="gradient-text text-4xl font-bold tracking-tight">
+              MecCafe
+            </h1>
+          </motion.div>
+
+          {/* Tagline */}
+          <motion.p
+            className="mb-4 text-lg text-muted-foreground"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
           >
-            Documentation
-          </a>
-        </div>
+            Mechwart András • Debrecen
+          </motion.p>
+
+          <motion.h2
+            className="mb-6 text-4xl font-bold leading-tight text-foreground lg:text-5xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Connect over{" "}
+            <span className="gradient-text">coffee</span>
+          </motion.h2>
+
+          <motion.p
+            className="mb-8 max-w-md text-lg text-muted-foreground"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            Meet fellow students who share your interests. Every week, we match
+            you with someone new for a coffee chat. Build real connections
+            beyond the classroom.
+          </motion.p>
+
+          {/* Features */}
+          <motion.div
+            className="flex flex-col gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            {FEATURES.map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                className="flex items-center gap-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 + i * 0.1 }}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                  <feature.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+
+        {/* Right side - Registration form */}
+        <motion.div
+          className="w-full max-w-md"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+        >
+          <motion.div
+            className="rounded-3xl border border-border bg-card p-8 shadow-2xl shadow-primary/5"
+            initial={{ y: 20 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <RegistrationForm />
+          </motion.div>
+        </motion.div>
       </main>
+
+      {/* Footer hint */}
+      <motion.div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-sm text-muted-foreground"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+      >
+        Made with ☕ for students of Debrecen
+      </motion.div>
     </div>
   );
 }

@@ -1,0 +1,590 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { createClient } from "@/lib/supabase";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Camera,
+  Check,
+  Coffee,
+  Mail,
+  Sparkles,
+  Upload,
+} from "lucide-react";
+
+const INTERESTS = [
+  { value: "programming", label: "Programming", emoji: "💻" },
+  { value: "music", label: "Music", emoji: "🎵" },
+  { value: "sports", label: "Sports", emoji: "⚽" },
+  { value: "art", label: "Art", emoji: "🎨" },
+  { value: "gaming", label: "Gaming", emoji: "🎮" },
+  { value: "reading", label: "Reading", emoji: "📚" },
+  { value: "cooking", label: "Cooking", emoji: "👨‍🍳" },
+  { value: "travel", label: "Travel", emoji: "✈️" },
+  { value: "photography", label: "Photography", emoji: "📷" },
+  { value: "films", label: "Films", emoji: "🎬" },
+  { value: "science", label: "Science", emoji: "🔬" },
+  { value: "languages", label: "Languages", emoji: "🌍" },
+] as const;
+
+const AGE_RANGES = [
+  { value: "range14to16", label: "14-16" },
+  { value: "range17to18", label: "17-18" },
+  { value: "range19to21", label: "19-21" },
+  { value: "range22plus", label: "22+" },
+] as const;
+
+const GENDERS = [
+  { value: "male", label: "Male", emoji: "👨" },
+  { value: "female", label: "Female", emoji: "👩" },
+  { value: "other", label: "Other", emoji: "🧑" },
+] as const;
+
+type Interest = (typeof INTERESTS)[number]["value"];
+type AgeRange = (typeof AGE_RANGES)[number]["value"];
+type Gender = (typeof GENDERS)[number]["value"];
+
+type FormData = {
+  prefInterests: Interest[];
+  prefAgeRange: AgeRange | null;
+  prefGender: Gender | null;
+  myInterests: Interest[];
+  myGender: Gender | null;
+  myAgeRange: AgeRange | null;
+  avatar: File | null;
+  avatarPreview: string | null;
+  email: string;
+};
+
+const STEPS = [
+  {
+    id: 1,
+    title: "What interests you?",
+    subtitle: "Pick interests your ideal coffee partner should have",
+  },
+  {
+    id: 2,
+    title: "Age preference?",
+    subtitle: "What age range are you looking for?",
+  },
+  {
+    id: 3,
+    title: "Gender preference?",
+    subtitle: "Who would you like to meet?",
+  },
+  { id: 4, title: "Your interests?", subtitle: "Tell us what you're into" },
+  { id: 5, title: "Your gender?", subtitle: "How do you identify?" },
+  { id: 6, title: "Your age?", subtitle: "What's your age range?" },
+  { id: 7, title: "Show yourself!", subtitle: "Take a quick selfie" },
+  { id: 8, title: "Almost there!", subtitle: "Enter your email to get matched" },
+] as const;
+
+export function RegistrationForm(): React.ReactNode {
+  const [step, setStep] = useState(1);
+  const [direction, setDirection] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [formData, setFormData] = useState<FormData>({
+    prefInterests: [],
+    prefAgeRange: null,
+    prefGender: null,
+    myInterests: [],
+    myGender: null,
+    myAgeRange: null,
+    avatar: null,
+    avatarPreview: null,
+    email: "",
+  });
+
+  const canProceed = (): boolean => {
+    switch (step) {
+      case 1:
+        return formData.prefInterests.length > 0;
+      case 2:
+        return formData.prefAgeRange !== null;
+      case 3:
+        return true; // Optional
+      case 4:
+        return formData.myInterests.length > 0;
+      case 5:
+        return formData.myGender !== null;
+      case 6:
+        return formData.myAgeRange !== null;
+      case 7:
+        return formData.avatar !== null;
+      case 8:
+        return formData.email.includes("@");
+      default:
+        return false;
+    }
+  };
+
+  const nextStep = (): void => {
+    if (step < 8 && canProceed()) {
+      setDirection(1);
+      setStep(step + 1);
+    }
+  };
+
+  const prevStep = (): void => {
+    if (step > 1) {
+      setDirection(-1);
+      setStep(step - 1);
+    }
+  };
+
+  const toggleInterest = (
+    interest: Interest,
+    type: "pref" | "my"
+  ): void => {
+    const key = type === "pref" ? "prefInterests" : "myInterests";
+    setFormData((prev) => ({
+      ...prev,
+      [key]: prev[key].includes(interest)
+        ? prev[key].filter((i) => i !== interest)
+        : [...prev[key], interest],
+    }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        avatar: file,
+        avatarPreview: URL.createObjectURL(file),
+      }));
+    }
+  };
+
+  const handleSubmit = async (): Promise<void> => {
+    if (!canProceed()) return;
+
+    setIsLoading(true);
+
+    try {
+      const supabase = createClient();
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email: formData.email,
+        options: {
+          data: {
+            prefInterests: formData.prefInterests,
+            prefAgeRange: formData.prefAgeRange,
+            prefGender: formData.prefGender,
+            myInterests: formData.myInterests,
+            myGender: formData.myGender,
+            myAgeRange: formData.myAgeRange,
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      setIsComplete(true);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction: number) => ({
+      x: direction < 0 ? 300 : -300,
+      opacity: 0,
+    }),
+  };
+
+  if (isComplete) {
+    return (
+      <motion.div
+        className="flex flex-col items-center justify-center py-12 text-center"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      >
+        <motion.div
+          className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        >
+          <Check className="h-10 w-10 text-primary-foreground" />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <h3 className="mb-2 text-2xl font-bold text-foreground">
+            Check your email!
+          </h3>
+          <p className="text-muted-foreground">
+            We sent a magic link to <strong>{formData.email}</strong>
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Click the link to complete your registration and get matched!
+          </p>
+        </motion.div>
+        <motion.div
+          className="mt-8 flex gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="text-2xl"
+              animate={{ y: [0, -10, 0] }}
+              transition={{
+                delay: 0.8 + i * 0.1,
+                duration: 0.5,
+                repeat: Infinity,
+                repeatDelay: 2,
+              }}
+            >
+              ☕
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col">
+      {/* Progress */}
+      <div className="mb-8 flex justify-center gap-2">
+        {STEPS.map((s) => (
+          <motion.div
+            key={s.id}
+            className={`h-2 w-2 rounded-full ${
+              s.id === step
+                ? "bg-primary"
+                : s.id < step
+                  ? "bg-primary/50"
+                  : "bg-muted"
+            }`}
+            animate={{
+              scale: s.id === step ? 1.3 : 1,
+            }}
+            transition={{ type: "spring", stiffness: 300 }}
+          />
+        ))}
+      </div>
+
+      {/* Step Content */}
+      <div className="relative min-h-[360px] overflow-hidden">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={step}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="absolute inset-0"
+          >
+            <div className="text-center">
+              <motion.h2
+                className="mb-2 text-xl font-bold text-foreground"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                {STEPS[step - 1].title}
+              </motion.h2>
+              <motion.p
+                className="mb-6 text-sm text-muted-foreground"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {STEPS[step - 1].subtitle}
+              </motion.p>
+            </div>
+
+            {/* Step 1 & 4: Interests */}
+            {(step === 1 || step === 4) && (
+              <motion.div
+                className="flex flex-wrap justify-center gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {INTERESTS.map((interest, i) => (
+                  <motion.div
+                    key={interest.value}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.05 * i }}
+                  >
+                    <Button
+                      variant="chip"
+                      size="chip"
+                      selected={
+                        step === 1
+                          ? formData.prefInterests.includes(interest.value)
+                          : formData.myInterests.includes(interest.value)
+                      }
+                      onClick={() =>
+                        toggleInterest(
+                          interest.value,
+                          step === 1 ? "pref" : "my"
+                        )
+                      }
+                    >
+                      <span>{interest.emoji}</span>
+                      <span>{interest.label}</span>
+                    </Button>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+
+            {/* Step 2 & 6: Age Range */}
+            {(step === 2 || step === 6) && (
+              <motion.div
+                className="flex flex-wrap justify-center gap-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {AGE_RANGES.map((age, i) => (
+                  <motion.div
+                    key={age.value}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * i }}
+                  >
+                    <Button
+                      variant="chip"
+                      size="lg"
+                      selected={
+                        step === 2
+                          ? formData.prefAgeRange === age.value
+                          : formData.myAgeRange === age.value
+                      }
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          [step === 2 ? "prefAgeRange" : "myAgeRange"]:
+                            age.value,
+                        }))
+                      }
+                      className="min-w-[80px]"
+                    >
+                      {age.label}
+                    </Button>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+
+            {/* Step 3 & 5: Gender */}
+            {(step === 3 || step === 5) && (
+              <motion.div
+                className="flex flex-wrap justify-center gap-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {GENDERS.map((gender, i) => (
+                  <motion.div
+                    key={gender.value}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * i }}
+                  >
+                    <Button
+                      variant="chip"
+                      size="lg"
+                      selected={
+                        step === 3
+                          ? formData.prefGender === gender.value
+                          : formData.myGender === gender.value
+                      }
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          [step === 3 ? "prefGender" : "myGender"]: gender.value,
+                        }))
+                      }
+                      className="min-w-[100px]"
+                    >
+                      <span className="text-xl">{gender.emoji}</span>
+                      <span>{gender.label}</span>
+                    </Button>
+                  </motion.div>
+                ))}
+                {step === 3 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <Button
+                      variant="chip"
+                      size="lg"
+                      selected={formData.prefGender === null}
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, prefGender: null }))
+                      }
+                      className="min-w-[100px]"
+                    >
+                      <Sparkles className="h-5 w-5" />
+                      <span>Anyone</span>
+                    </Button>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+
+            {/* Step 7: Avatar */}
+            {step === 7 && (
+              <motion.div
+                className="flex flex-col items-center gap-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  capture="user"
+                  className="hidden"
+                />
+                {formData.avatarPreview ? (
+                  <motion.div
+                    className="relative"
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring" }}
+                  >
+                    <img
+                      src={formData.avatarPreview}
+                      alt="Preview"
+                      className="h-40 w-40 rounded-full border-4 border-primary object-cover shadow-lg"
+                    />
+                    <motion.button
+                      className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
+                      onClick={() => fileInputRef.current?.click()}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Camera className="h-5 w-5" />
+                    </motion.button>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    className="flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-full border-4 border-dashed border-muted-foreground/30 bg-muted/30 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    onClick={() => fileInputRef.current?.click()}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Upload className="h-8 w-8" />
+                    <span className="text-sm font-medium">Upload photo</span>
+                  </motion.button>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Your photo helps others recognize you
+                </p>
+              </motion.div>
+            )}
+
+            {/* Step 8: Email */}
+            {step === 8 && (
+              <motion.div
+                className="flex flex-col items-center gap-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <Mail className="h-8 w-8 text-primary" />
+                </div>
+                <div className="w-full max-w-xs">
+                  <Input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, email: e.target.value }))
+                    }
+                    className="text-center"
+                  />
+                </div>
+                <p className="max-w-xs text-center text-xs text-muted-foreground">
+                  We&apos;ll send you a magic link to verify your email and
+                  complete registration
+                </p>
+              </motion.div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Navigation */}
+      <div className="mt-8 flex items-center justify-between">
+        <Button
+          variant="ghost"
+          onClick={prevStep}
+          disabled={step === 1}
+          className={step === 1 ? "invisible" : ""}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Button>
+
+        {step < 8 ? (
+          <Button onClick={nextStep} disabled={!canProceed()}>
+            Next
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button
+            onClick={handleSubmit}
+            disabled={!canProceed() || isLoading}
+            className="animate-pulse-glow"
+          >
+            {isLoading ? (
+              <>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                >
+                  <Coffee className="h-4 w-4" />
+                </motion.div>
+                Sending...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" />
+                Get Matched
+              </>
+            )}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
