@@ -3,28 +3,28 @@
     "features": {
       "interestMatching": {
         "title": "Érdeklődés alapú párosítás",
-        "description": "Találkozz olyan diákokkal, akik hasonló dolgok iránt érdeklődnek"
+        "description": "Találkozz hozzád hasonló érdeklődésű diákokkal"
       },
       "weeklyMatches": {
         "title": "Heti párosítások",
-        "description": "Minden héten új kávépartner ajánlások"
+        "description": "Minden héten új kávépartner-ajánlások"
       },
       "realConnections": {
         "title": "Valódi kapcsolatok",
-        "description": "Alakíts online ismeretségekből élő barátságokat"
+        "description": "Az online ismeretségből legyen élő barátság"
       }
     },
     "hero": {
       "tagline": "Mechwart András • Debrecen",
-      "title": "Ismerkedj egy",
-      "titleHighlight": "kávé",
-      "description": "Találkozz hasonló érdeklődésű diákokkal. Minden héten egy új személlyel párosítunk egy kávés beszélgetésre. Építs valódi kapcsolatokat az osztálytermen túl."
+      "title": "Ismerkedj egy jó",
+      "titleHighlight": "kávé mellett",
+      "description": "Találkozz hozzád hasonló diákokkal! Minden héten sorsolunk neked egy új beszélgetőpartnert egy kávéra. Építs valódi kapcsolatokat az iskolapadon túl is."
     },
     "footer": "☕-val készült Debrecen diákjainak",
     "welcomeBack": {
-      "title": "Üdv újra!",
-      "message": "Már be vagy jelentkezve. Menj az irányítópultra, hogy megnézd a párosításaidat és frissítsd a beállításaidat.",
-      "goToDashboard": "Irányítópult"
+      "title": "Jó újra látni!",
+      "message": "Már be vagy jelentkezve. Menj a vezérlőpultra, hogy megnézd a párosításaidat és frissítsd a beállításaidat.",
+      "goToDashboard": "Vezérlőpult"
     },
     "alreadyHaveAccount": "Már van fiókod?",
     "login": "Bejelentkezés"
@@ -52,28 +52,28 @@
     },
     "steps": {
       "prefInterests": {
-        "title": "Mi érdekel?",
-        "subtitle": "Válaszd ki, milyen érdeklődésű kávépartnert keresel"
+        "title": "Közös témák?",
+        "subtitle": "Milyen érdeklődésű partnert keresel?"
       },
       "prefAge": {
-        "title": "Életkori preferencia?",
+        "title": "Hány éves legyen?",
         "subtitle": "Milyen korosztályt keresel?"
       },
       "prefGender": {
-        "title": "Nem preferencia?",
+        "title": "Kit keresel?",
         "subtitle": "Kivel szeretnél találkozni?"
       },
       "myInterests": {
-        "title": "A te érdeklődésed?",
-        "subtitle": "Mondd el, mi érdekel téged"
+        "title": "Téged mi érdekel?",
+        "subtitle": "Jelöld be a kedvenc témáidat"
       },
       "myGender": {
-        "title": "A te nemed?",
+        "title": "Mi a nemed?",
         "subtitle": "Hogyan azonosítod magad?"
       },
       "myAge": {
-        "title": "A te korod?",
-        "subtitle": "Milyen korosztályba tartozol?"
+        "title": "Hány éves vagy?",
+        "subtitle": "Melyik korosztályba tartozol?"
       },
       "avatar": {
         "title": "Mutasd meg magad!",
@@ -91,18 +91,18 @@
     },
     "email": {
       "placeholder": "email@cimed.hu",
-      "help": "Küldünk egy mágikus linket az email címed megerősítéséhez és a regisztráció befejezéséhez"
+      "help": "Küldünk egy megerősítő linket az email címed ellenőrzéséhez és a regisztráció befejezéséhez"
     },
     "navigation": {
       "back": "Vissza",
       "next": "Tovább",
       "sending": "Küldés...",
-      "getMatched": "Párosítás"
+      "getMatched": "Párosítás kérése"
     },
     "success": {
       "title": "Nézd meg az emailjeidet!",
-      "sentTo": "Mágikus linket küldtünk ide:",
-      "instruction": "Kattints a linkre a regisztráció befejezéséhez és a párosításhoz!"
+      "sentTo": "A megerősítő linket ide küldtük:",
+      "instruction": "Kattints a linkre a regisztráció befejezéséhez és a párosítás indításához!"
     },
     "preview": "Előnézet"
   },
@@ -121,15 +121,15 @@
   },
   "login-form": {
     "title": "Bejelentkezés",
-    "subtitle": "Add meg az email címed, hogy bejelentkezési linket kapj",
+    "subtitle": "Add meg az email címed a belépéshez",
     "email": {
       "placeholder": "email@cimed.hu",
-      "sendLink": "Bejelentkezési link küldése",
+      "sendLink": "Belépési link küldése",
       "sending": "Küldés..."
     },
     "linkSent": {
       "title": "Nézd meg az emailjeidet!",
-      "message": "Bejelentkezési linket küldtünk ide:",
+      "message": "A belépési linket ide küldtük:",
       "instruction": "Kattints a linkre az emailben a bejelentkezéshez.",
       "backToEmail": "Vissza az emailhez"
     }
@@ -138,12 +138,12 @@
     "title": "Beállítások",
     "edit": "Szerkesztés",
     "viewMode": {
-      "message": "Kattints a Szerkesztés gombra a beállításaid és profilinformációid módosításához."
+      "message": "Kattints a Szerkesztés gombra a preferenciák és a profilod módosításához."
     },
     "editing": {
       "title": "Beállítások szerkesztése",
       "cancel": "Mégse",
-      "save": "Változások mentése",
+      "save": "Mentés",
       "saving": "Mentés..."
     },
     "sections": {
@@ -151,12 +151,12 @@
       "myInfo": "Rólad"
     },
     "labels": {
-      "prefInterests": "Preferált érdeklődések",
-      "prefAgeRange": "Preferált korosztály",
-      "prefGender": "Preferált nem",
-      "myInterests": "A te érdeklődésed",
-      "myGender": "A te nemed",
-      "myAgeRange": "A te korosztályod",
+      "prefInterests": "Partner érdeklődési köre",
+      "prefAgeRange": "Partner kora",
+      "prefGender": "Partner neme",
+      "myInterests": "Saját érdeklődés",
+      "myGender": "Saját nem",
+      "myAgeRange": "Saját korosztály",
       "avatar": "Profilfotó"
     },
     "interests": {
@@ -189,8 +189,8 @@
     "title": "Korábbi párosítások",
     "loading": "Párosítások betöltése...",
     "empty": {
-      "title": "Még nincsenek párosítások",
-      "message": "Itt fogod látni a párosításaidat, miután valakivel párosítottunk!"
+      "title": "Még nincs találat",
+      "message": "Itt találod majd a párosításokat, amint találunk neked valakit!"
     },
     "match": {
       "avatarAlt": "Párosítás avatar",
