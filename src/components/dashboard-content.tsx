@@ -31,18 +31,33 @@ type DashboardContentProps = {
   avatarUrl: string | null;
 };
 
+function getAvatarUrl(avatarPath: string | null): string | null {
+  if (!avatarPath) return null;
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${avatarPath}`;
+}
+
 export function DashboardContent({
-  profile,
-  avatarUrl,
+  profile: initialProfile,
+  avatarUrl: initialAvatarUrl,
 }: DashboardContentProps): React.ReactNode {
   const t = useTranslations("DashboardContent");
   const tPrefs = useTranslations("PreferencesEditor");
   const utils = trpc.useUtils();
 
+  const { data: profile } = trpc.profile.getMyProfile.useQuery(undefined, {
+    initialData: initialProfile,
+  });
+
+  const avatarUrl = profile ? getAvatarUrl(profile.avatar_path) : initialAvatarUrl;
+
   const handlePreferencesSaved = (): void => {
     utils.profile.getMyProfile.invalidate();
     utils.profile.getMyMatches.invalidate();
   };
+
+  if (!profile) {
+    return null;
+  }
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
@@ -72,10 +87,10 @@ export function DashboardContent({
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
-                {t("gender", { default: "Gender" })}: {tPrefs(`genders.${profile.my_gender}`, { default: GENDER_LABELS[profile.my_gender] })}
+                {t("gender", { default: "Gender" })}: {tPrefs(`genders.${profile.my_gender}`, { default: GENDER_LABELS[profile.my_gender as Gender] })}
               </p>
               <p className="text-sm text-muted-foreground">
-                {t("age", { default: "Age" })}: {AGE_RANGE_LABELS[profile.my_age_range]}
+                {t("age", { default: "Age" })}: {AGE_RANGE_LABELS[profile.my_age_range as AgeRange]}
               </p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { publicProcedure, router } from "../trpc";
+import { publicProcedure, protectedProcedure, router } from "../trpc";
 import {
   createServerSupabaseClient,
   createServiceRoleClient,
@@ -9,6 +9,10 @@ import {
   genderSchema,
   ageRangeSchema,
 } from "@/lib/zod";
+import {
+  validateImageFile,
+  getFileExtension,
+} from "@/lib/file-validation";
 
 export const profileRouter = router({
   register: publicProcedure
@@ -51,7 +55,13 @@ export const profileRouter = router({
       }
 
       const buffer = Buffer.from(input.avatarBase64, "base64");
-      const extension = input.avatarContentType.split("/")[1] || "jpg";
+
+      const validation = validateImageFile(buffer, input.avatarContentType);
+      if (!validation.valid) {
+        throw new Error(validation.error);
+      }
+
+      const extension = getFileExtension(input.avatarContentType);
       const avatarPath = `${user.id}.${extension}`;
 
       const { error: uploadError } = await serviceClient.storage
@@ -85,27 +95,17 @@ export const profileRouter = router({
       return { success: true };
     }),
 
-  getMyProfile: publicProcedure.query(async () => {
-    const supabase = await createServerSupabaseClient();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return null;
-    }
-
-    const { data } = await supabase
+  getMyProfile: protectedProcedure.query(async ({ ctx }) => {
+    const { data } = await ctx.supabase
       .from("profiles")
       .select("*")
-      .eq("auth_id", user.id)
+      .eq("auth_id", ctx.user.id)
       .single();
 
     return data;
   }),
 
-  updatePreferences: publicProcedure
+  updatePreferences: protectedProcedure
     .input(
       z.object({
         myInterests: z.array(interestSchema).min(1).optional(),
@@ -118,22 +118,13 @@ export const profileRouter = router({
         avatarContentType: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
-      const supabase = await createServerSupabaseClient();
+    .mutation(async ({ input, ctx }) => {
       const serviceClient = createServiceRoleClient();
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        throw new Error("Not authenticated");
-      }
-
-      const { data: profile } = await supabase
+      const { data: profile } = await ctx.supabase
         .from("profiles")
         .select("id, avatar_path")
-        .eq("auth_id", user.id)
+        .eq("auth_id", ctx.user.id)
         .single();
 
       if (!profile) {
@@ -163,8 +154,14 @@ export const profileRouter = router({
 
       if (input.avatarBase64 && input.avatarContentType) {
         const buffer = Buffer.from(input.avatarBase64, "base64");
-        const extension = input.avatarContentType.split("/")[1] || "jpg";
-        const avatarPath = `${user.id}.${extension}`;
+
+        const validation = validateImageFile(buffer, input.avatarContentType);
+        if (!validation.valid) {
+          throw new Error(validation.error);
+        }
+
+        const extension = getFileExtension(input.avatarContentType);
+        const avatarPath = `${ctx.user.id}.${extension}`;
 
         const { error: uploadError } = await serviceClient.storage
           .from("avatars")
@@ -183,7 +180,7 @@ export const profileRouter = router({
       const { error: updateError } = await serviceClient
         .from("profiles")
         .update(updateData)
-        .eq("auth_id", user.id);
+        .eq("auth_id", ctx.user.id);
 
       if (updateError) {
         throw new Error(updateError.message);
@@ -192,31 +189,21 @@ export const profileRouter = router({
       return { success: true };
     }),
 
-  getMyMatches: publicProcedure.query(async () => {
-    const supabase = await createServerSupabaseClient();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return [];
-    }
-
-    const { data: profile } = await supabase
+  getMyMatches: protectedProcedure.query(async ({ ctx }) => {
+    const { data: profile } = await ctx.supabase
       .from("profiles")
       .select("id")
-      .eq("auth_id", user.id)
+      .eq("auth_id", ctx.user.id)
       .single();
 
     if (!profile) {
       return [];
     }
 
-    const { data: matches, error } = await supabase
+    const { data: matches, error } = await ctx.supabase
       .from("matches")
       .select("id, matched_at, user1_profile_id, user2_profile_id")
-      .or(`user1_profile_id.eq.${profile.id},user2_profile_id.eq.${profile.id}`)
+      .or(`user1_profile_id.eq."${profile.id}",user2_profile_id.eq."${profile.id}"`)
       .order("matched_at", { ascending: false });
 
     if (error) {
@@ -233,7 +220,7 @@ export const profileRouter = router({
         : match.user1_profile_id
     );
 
-    const { data: partners, error: partnersError } = await supabase
+    const { data: partners, error: partnersError } = await ctx.supabase
       .from("profiles")
       .select("id, avatar_path, my_interests, my_gender, my_age_range")
       .in("id", partnerIds);
