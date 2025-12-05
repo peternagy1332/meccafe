@@ -2,9 +2,11 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import superjson from "superjson";
 import { trpc } from "@/lib/trpc";
+import { createClient } from "@/lib/supabase";
+import posthog from "posthog-js";
 
 function getBaseUrl(): string {
   if (typeof window !== "undefined") return "";
@@ -24,6 +26,34 @@ export function Providers({ children }: { children: React.ReactNode }): React.Re
       ],
     })
   );
+
+  useEffect(() => {
+    // Identify user in PostHog when they log in
+    const supabase = createClient();
+    
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        posthog.identify(session.user.id, {
+          email: session.user.email,
+        });
+      }
+    });
+
+    // Check initial auth state
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        posthog.identify(user.id, {
+          email: user.email,
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
