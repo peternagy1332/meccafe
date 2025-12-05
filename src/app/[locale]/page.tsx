@@ -67,7 +67,7 @@ export default function Home(): React.ReactNode {
   const t = useTranslations("Home");
 
   return (
-    <div className="noise-overlay relative min-h-screen overflow-hidden bg-background">
+    <div className="noise-overlay relative overflow-hidden bg-background">
       <Suspense fallback={null}>
         <AuthCallbackHandler />
       </Suspense>
@@ -89,7 +89,7 @@ export default function Home(): React.ReactNode {
       <FloatingBean className="absolute left-[5%] top-[50%]" delay={2} />
 
       {/* Main content */}
-      <main className="relative mx-auto flex min-h-screen max-w-7xl flex-col items-center gap-8 px-6 py-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16 lg:py-0">
+      <main className="relative mx-auto flex max-w-7xl flex-col items-center gap-8 px-6 py-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16 lg:py-12">
         {/* Left side - Hero info */}
         <motion.div
           className="flex max-w-xl flex-col items-center text-center lg:items-start lg:text-left"
