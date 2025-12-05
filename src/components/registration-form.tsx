@@ -323,7 +323,7 @@ export function RegistrationForm(): React.ReactNode {
       </div>
 
       {/* Step Content */}
-      <div className="relative min-h-[360px] overflow-hidden">
+      <div className="relative min-h-0">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={step}
@@ -333,7 +333,7 @@ export function RegistrationForm(): React.ReactNode {
             animate="center"
             exit="exit"
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="absolute inset-0"
+            className="relative"
           >
             <div className="text-center">
               <motion.h2

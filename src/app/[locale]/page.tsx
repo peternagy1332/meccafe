@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { HomeContent } from "@/components/home-content";
@@ -9,6 +9,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
+import { LogoutButton } from "@/components/logout-button";
+import { createClient } from "@/lib/supabase";
 import Link from "next/link";
 
 function FloatingBean({
@@ -63,6 +65,38 @@ function AuthCallbackHandler(): React.ReactNode {
   return null;
 }
 
+function AuthButton(): React.ReactNode {
+  const t = useTranslations("Home");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async (): Promise<void> => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return null;
+  }
+
+  if (isAuthenticated) {
+    return <LogoutButton />;
+  }
+
+  return (
+    <Link href="/login">
+      <Button variant="outline" size="sm">
+        {t("login", { default: "Login" })}
+      </Button>
+    </Link>
+  );
+}
+
 export default function Home(): React.ReactNode {
   const t = useTranslations("Home");
 
@@ -71,14 +105,10 @@ export default function Home(): React.ReactNode {
       <Suspense fallback={null}>
         <AuthCallbackHandler />
       </Suspense>
-      {/* Language Switcher and Login Button */}
+      {/* Language Switcher and Auth Button */}
       <div className="absolute right-4 top-4 z-10 flex items-center gap-4">
         <LanguageSwitcher />
-        <Link href="/login">
-          <Button variant="outline" size="sm">
-            {t("login", { default: "Login" })}
-          </Button>
-        </Link>
+        <AuthButton />
       </div>
 
       {/* Floating decorations */}
